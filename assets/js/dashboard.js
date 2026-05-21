@@ -2,153 +2,36 @@ document.addEventListener("DOMContentLoaded", () => {
     initDashboard();
 });
 
-function initDashboard(){
+async function initDashboard(){
 
-    initTeamsIfNeeded();
+    const profile = await getCurrentProfile();
 
-    let user = getCurrentUser();
-
-    if(!user){
+    if(!profile){
         window.location.href = "../index.html";
         return;
     }
 
-    user = regenerateEnergy(user);
-    updateCurrentUser(user);
-
-    updatePlayerInfo();
-    updateEnergyDisplay();
-    renderRanking();
-    renderTeamSelection();
-    startEnergyTimer();
-
-    document
-    .getElementById("actionBtn")
-    .addEventListener("click", performPlayerAction);
-
-    const logoutBtn =
-    document.getElementById("logoutBtn");
-
-    if(logoutBtn){
-
-        logoutBtn.addEventListener("click", (event) => {
-
-            event.preventDefault();
-
-            logoutUser();
-        });
-    }
-}
-
-function updatePlayerInfo(){
-
-    const user = getCurrentUser();
-
-    let teamText = "Kein Team";
-
-    if(user.teamId){
-
-        const teams = getTeams();
-
-        const team = teams.find(t => {
-            return t.id === user.teamId;
-        });
-
-        if(team){
-            teamText = team.name;
-        }
+    if(profile.is_blocked || !profile.active){
+        await supabaseClient.auth.signOut();
+        window.location.href = "../index.html";
+        return;
     }
 
     document.getElementById("playerInfo").innerText =
-        user.username + " | Team: " + teamText;
-}
-
-function updateEnergyDisplay(){
-
-    let user = getCurrentUser();
-
-    user = regenerateEnergy(user);
-    updateCurrentUser(user);
+        profile.username + " | Rolle: " + profile.role;
 
     document.getElementById("energyText").innerText =
-        user.energy + " / " + GAME_CONFIG.maxEnergy;
+        profile.energy + " / 100";
 
     document.getElementById("energyFill").style.width =
-        user.energy + "%";
-}
+        profile.energy + "%";
 
-function startEnergyTimer(){
-    setInterval(() => {
-        updateEnergyDisplay();
-    }, 1000);
-}
+    const logoutBtn = document.getElementById("logoutBtn");
 
-function renderTeamSelection(){
-
-    const user = getCurrentUser();
-
-    if(user.teamId){
-        return;
-    }
-
-    const teams = getTeams();
-
-    const wrapper =
-    document.createElement("section");
-
-    wrapper.className = "panel";
-    wrapper.id = "teamSelectionPanel";
-
-    wrapper.innerHTML = `
-        <h2>Team auswählen</h2>
-        <div id="dashboardTeamList" class="team-list"></div>
-    `;
-
-    document
-    .querySelector(".dashboard-grid")
-    .prepend(wrapper);
-
-    const teamList =
-    document.getElementById("dashboardTeamList");
-
-    teams.forEach(team => {
-
-        const div =
-        document.createElement("div");
-
-        div.className = "team-card";
-
-        div.style.background = team.color;
-
-        div.innerHTML = `
-            <h3>${team.name}</h3>
-            <p>${team.points} Punkte</p>
-        `;
-
-        div.addEventListener("click", () => {
-            joinTeam(team.id);
+    if(logoutBtn){
+        logoutBtn.addEventListener("click", async (event) => {
+            event.preventDefault();
+            await logoutUser();
         });
-
-        teamList.appendChild(div);
-    });
-}
-
-function joinTeam(teamId){
-
-    const user = getCurrentUser();
-
-    if(user.teamId){
-        return;
     }
-
-    user.teamId = teamId;
-
-    updateCurrentUser(user);
-
-    addPlayerToTeam(
-        teamId,
-        user.username
-    );
-
-    location.reload();
 }
