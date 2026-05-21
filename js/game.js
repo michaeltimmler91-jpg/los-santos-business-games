@@ -26,6 +26,7 @@ async function initGame() {
     restorePlayer();
     await loadLeaderboard();
     await loadActionFeed();
+    await loadDistricts();
     setupRealtime();
 }
 
@@ -241,7 +242,72 @@ function setupRealtime() {
             },
             () => loadActionFeed()
         )
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "game_districts"
+            },
+            () => loadDistricts()
+        )
         .subscribe();
 }
+async function loadDistricts() {
+    const { data, error } = await db
+        .from("game_districts")
+        .select(`
+            *,
+            game_companies (
+                name,
+                icon,
+                color
+            )
+        `)
+        .eq("active", true)
+        .order("name", {
+            ascending: true
+        });
 
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    const box =
+    document.getElementById("districtGrid");
+
+    if (!box) return;
+
+    box.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        box.innerHTML =
+        "Noch keine Gebiete.";
+        return;
+    }
+
+    data.forEach(district => {
+        const owner =
+        district.game_companies;
+
+        box.innerHTML += `
+            <div class="district-card">
+                <strong>📍 ${district.name}</strong>
+
+                <div class="${
+                    owner
+                    ? "district-owner"
+                    : "district-empty"
+                }">
+                    ${
+                        owner
+                        ? `${owner.icon} ${owner.name}`
+                        : "Noch neutral"
+                    }
+                </div>
+            </div>
+        `;
+    });
+}
 initGame();
