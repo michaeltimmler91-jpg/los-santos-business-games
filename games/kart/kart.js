@@ -21,7 +21,7 @@ window.addEventListener("keyup", e => {
 });
 
 const player = {
-    x: 250,
+    x: 260,
     y: 520,
     width: 42,
     height: 24,
@@ -48,23 +48,33 @@ const race = {
 };
 
 const roads = [
-    { x: 160, y: 460, w: 900, h: 140 },
-    { x: 920, y: 460, w: 140, h: 420 },
-    { x: 520, y: 740, w: 540, h: 140 },
-    { x: 520, y: 740, w: 140, h: 420 },
-    { x: 520, y: 1020, w: 780, h: 140 },
-    { x: 1160, y: 620, w: 140, h: 540 },
-    { x: 1160, y: 620, w: 520, h: 140 },
-    { x: 1540, y: 260, w: 140, h: 500 },
-    { x: 720, y: 260, w: 960, h: 140 },
-    { x: 720, y: 260, w: 140, h: 340 },
-    { x: 160, y: 460, w: 700, h: 140 }
+    // Start/Ziel Gerade unten
+    { x: 180, y: 500, w: 1200, h: 140 },
+
+    // rechte Gerade hoch
+    { x: 1240, y: 260, w: 140, h: 380 },
+
+    // obere Gerade zurück
+    { x: 360, y: 260, w: 1020, h: 140 },
+
+    // linke Gerade runter
+    { x: 360, y: 260, w: 140, h: 620 },
+
+    // untere Rückführung
+    { x: 360, y: 740, w: 780, h: 140 },
+
+    // kleine Schikane rechts unten
+    { x: 1000, y: 620, w: 140, h: 260 },
+    { x: 1000, y: 620, w: 380, h: 140 },
+
+    // Verbindung zur Startgeraden
+    { x: 1240, y: 500, w: 140, h: 260 }
 ];
 
 const boostPads = [
-    { x: 420, y: 500, w: 180, h: 44 },
-    { x: 1240, y: 660, w: 44, h: 180 },
-    { x: 820, y: 300, w: 200, h: 44 }
+    { x: 620, y: 548, w: 180, h: 44 },
+    { x: 780, y: 308, w: 200, h: 44 },
+    { x: 1048, y: 700, w: 44, h: 120 }
 ];
 
 const checkpoints = {
@@ -73,9 +83,14 @@ const checkpoints = {
     cp3: { x: 1500, y: 300, w: 120, h: 240 }
 };
 
+const checkpoints = {
+    cp1: { x: 1240, y: 300, w: 140, h: 160 },
+    cp2: { x: 700, y: 260, w: 220, h: 140 },
+    cp3: { x: 360, y: 700, w: 140, h: 180 }
+};
 const finishLine = {
-    x: 210,
-    y: 460,
+    x: 230,
+    y: 500,
     w: 24,
     h: 140
 };
