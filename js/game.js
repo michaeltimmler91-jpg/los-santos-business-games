@@ -1,5 +1,9 @@
 let companies = [];
 let currentPlayer = null;
+let lastAttackTime = 0;
+
+const attackCooldownMs =
+60000;
 
 const districts = [
     "Mirror Park",
@@ -357,7 +361,31 @@ async function loadDistricts() {
 async function attackDistrict() {
 
     if (!currentPlayer) return;
+    const now = Date.now();
 
+const remaining =
+attackCooldownMs -
+(now - lastAttackTime);
+
+if (remaining > 0) {
+
+    const seconds =
+    Math.ceil(
+        remaining / 1000
+    );
+
+    document.getElementById(
+        "actionResult"
+    ).innerHTML = `
+        ⏳ Du kannst erst
+        in ${seconds} Sekunden
+        wieder angreifen.
+    `;
+
+    return;
+}
+
+lastAttackTime = now;
     const districtId =
     Number(
         document.getElementById(
