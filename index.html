@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Wars</title>
 
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="login-container">
+
+        <h1>TEAM WARS</h1>
+
+        <p class="subtitle">
+            Wähle deinen Namen und tritt einem Team bei
+        </p>
+
+        <input
+            type="text"
+            id="playerName"
+            placeholder="Spielername"
+        >
+
+        <div id="teamList" class="team-list"></div>
+
+        <button id="startGameBtn">
+            Spiel starten
+        </button>
+
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/teams.js"></script>
+    <script src="assets/js/player.js"></script>
+    <script src="assets/js/app.js"></script>
+
+</body>
+</html>
