@@ -3,131 +3,217 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initTeamAdmin(){
+
     initTeamsIfNeeded();
 
-    const player = loadData("player");
+    const user = getCurrentUser();
 
-    if(!player){
-        window.location.href = "../index.html";
+    if(!user){
+
+        window.location.href =
+        "../index.html";
+
         return;
     }
 
-    const team = getPlayerTeam(player);
+    if(!user.teamId){
+
+        showNoAccess(
+            "Du bist aktuell in keinem Team."
+        );
+
+        return;
+    }
+
+    const team = getTeamById(
+        user.teamId
+    );
 
     if(!team){
-        showTeamAdminMessage("Team wurde nicht gefunden.");
-        return;
-    }
 
-    if(team.leader !== player.name){
-        document.querySelector("main").innerHTML = `
-            <section class="panel">
-                <h2>Kein Zugriff</h2>
-                <p class="info-text">
-                    Nur der Teamleiter von ${team.name} darf diesen Bereich verwalten.
-                </p>
-            </section>
-        `;
-
-        document.getElementById("teamAdminInfo").innerText =
-            "Keine Berechtigung";
+        showNoAccess(
+            "Team wurde nicht gefunden."
+        );
 
         return;
     }
 
-    document.getElementById("teamAdminInfo").innerText =
-        "Verwaltung für " + team.name;
+    if(team.leader !== user.username){
+
+        showNoAccess(
+            "Nur der Teamleiter darf diesen Bereich verwalten."
+        );
+
+        return;
+    }
+
+    document.getElementById(
+        "teamAdminInfo"
+    ).innerText =
+        "Verwaltung für " +
+        team.name;
 
     renderMemberList();
 
     document
     .getElementById("addMemberBtn")
-    .addEventListener("click", addMemberFromInput);
-}
-
-function getPlayerTeam(player){
-    const teams = getTeams();
-
-    return teams.find(team => {
-        return team.id === player.team;
-    });
+    .addEventListener(
+        "click",
+        addMemberFromInput
+    );
 }
 
 function addMemberFromInput(){
-    const player = loadData("player");
-    const team = getPlayerTeam(player);
 
-    const input = document.getElementById("newMemberName");
-    const newMemberName = input.value.trim();
+    const user = getCurrentUser();
 
-    if(!newMemberName){
-        showTeamAdminMessage("Bitte Spielernamen eingeben.");
+    const team =
+    getTeamById(user.teamId);
+
+    const input =
+    document.getElementById(
+        "newMemberName"
+    );
+
+    const username =
+    input.value.trim();
+
+    if(!username){
+
+        showTeamAdminMessage(
+            "Bitte Spielernamen eingeben."
+        );
+
         return;
     }
 
-    addPlayerToTeam(team.id, newMemberName);
+    const users = getUsers();
+
+    const targetUser =
+    users.find(u => {
+        return u.username === username;
+    });
+
+    if(!targetUser){
+
+        showTeamAdminMessage(
+            "Spieler existiert nicht."
+        );
+
+        return;
+    }
+
+    targetUser.teamId = team.id;
+
+    const updatedUsers =
+    users.map(u => {
+        return u.id === targetUser.id
+            ? targetUser
+            : u;
+    });
+
+    saveUsers(updatedUsers);
+
+    addPlayerToTeam(
+        team.id,
+        targetUser.username
+    );
 
     input.value = "";
 
     renderMemberList();
 
     showTeamAdminMessage(
-        newMemberName + " wurde dem Team hinzugefügt."
+        username +
+        " wurde hinzugefügt."
     );
 }
 
 function removeMemberFromTeam(memberName){
-    const player = loadData("player");
-    const teams = getTeams();
-    const team = teams.find(t => t.id === player.team);
 
-    if(!team){
-        return;
-    }
+    const user =
+    getCurrentUser();
+
+    const team =
+    getTeamById(user.teamId);
 
     if(team.leader === memberName){
-        showTeamAdminMessage("Der Teamleiter kann nicht entfernt werden.");
+
+        showTeamAdminMessage(
+            "Teamleiter kann nicht entfernt werden."
+        );
+
         return;
     }
 
-    team.members = team.members.filter(member => {
+    team.members =
+    team.members.filter(member => {
         return member !== memberName;
     });
 
-    saveTeams(teams);
+    const users = getUsers();
+
+    const updatedUsers =
+    users.map(u => {
+
+        if(u.username === memberName){
+            u.teamId = null;
+        }
+
+        return u;
+    });
+
+    saveUsers(updatedUsers);
+
+    saveTeams(getTeams());
 
     renderMemberList();
 
     showTeamAdminMessage(
-        memberName + " wurde aus dem Team entfernt."
+        memberName +
+        " wurde entfernt."
     );
 }
 
 function renderMemberList(){
-    const player = loadData("player");
-    const team = getPlayerTeam(player);
-    const memberList = document.getElementById("memberList");
+
+    const user =
+    getCurrentUser();
+
+    const team =
+    getTeamById(user.teamId);
+
+    const memberList =
+    document.getElementById(
+        "memberList"
+    );
 
     memberList.innerHTML = "";
 
-    if(!team.members || team.members.length === 0){
+    if(team.members.length === 0){
+
         memberList.innerHTML =
-            "<p class='info-text'>Noch keine Mitglieder vorhanden.</p>";
+            "<p class='info-text'>Keine Mitglieder vorhanden.</p>";
+
         return;
     }
 
     team.members.forEach(member => {
-        const row = document.createElement("div");
 
-        row.className = "member-row";
+        const row =
+        document.createElement("div");
+
+        row.className =
+        "member-row";
 
         const leaderBadge =
             team.leader === member
-                ? "<span class='badge'>Teamleiter</span>"
-                : "";
+            ? "<span class='badge'>Teamleiter</span>"
+            : "";
 
         row.innerHTML = `
             <span>${member} ${leaderBadge}</span>
+
             <button class="small-danger-btn">
                 Entfernen
             </button>
@@ -135,18 +221,37 @@ function renderMemberList(){
 
         row
         .querySelector("button")
-        .addEventListener("click", () => {
-            removeMemberFromTeam(member);
-        });
+        .addEventListener(
+            "click",
+            () => {
+                removeMemberFromTeam(member);
+            }
+        );
 
         memberList.appendChild(row);
     });
 }
 
-function showTeamAdminMessage(text){
-    const message = document.getElementById("teamAdminMessage");
+function showNoAccess(text){
 
-    if(message){
-        message.innerText = text;
+    document.querySelector("main").innerHTML = `
+        <section class="panel">
+            <h2>Kein Zugriff</h2>
+            <p class="info-text">
+                ${text}
+            </p>
+        </section>
+    `;
+}
+
+function showTeamAdminMessage(text){
+
+    const msg =
+    document.getElementById(
+        "teamAdminMessage"
+    );
+
+    if(msg){
+        msg.innerText = text;
     }
 }
