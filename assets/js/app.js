@@ -1,10 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const currentUser = getCurrentUser();
-
-    if(currentUser){
-        window.location.href = "pages/dashboard.html";
-        return;
-    }
 
     document
     .getElementById("loginBtn")
@@ -15,47 +9,54 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", handleRegister);
 });
 
-function handleLogin(){
-    const username = document.getElementById("usernameInput").value.trim();
-    const password = document.getElementById("passwordInput").value.trim();
+async function handleLogin(){
+
+    const username =
+    document.getElementById("usernameInput").value.trim();
+
+    const password =
+    document.getElementById("passwordInput").value.trim();
 
     if(!username || !password){
         showAuthMessage("Bitte Benutzername und Passwort eingeben.");
         return;
     }
 
-    const result = loginUser(username, password);
+    showAuthMessage("Login wird geprüft...");
+
+    const result =
+    await loginUser(username, password);
 
     if(!result.success){
         showAuthMessage(result.message);
         return;
     }
 
-    window.location.href = "pages/dashboard.html";
+    window.location.href =
+    "pages/dashboard.html";
 }
 
-function handleRegister(){
-    const username = document.getElementById("usernameInput").value.trim();
-    const password = document.getElementById("passwordInput").value.trim();
+async function handleRegister(){
+
+    const username =
+    document.getElementById("usernameInput").value.trim();
+
+    const password =
+    document.getElementById("passwordInput").value.trim();
 
     if(!username || !password){
         showAuthMessage("Bitte Benutzername und Passwort eingeben.");
         return;
     }
 
-    const result = createUser(username, password);
+    showAuthMessage("Account wird erstellt...");
 
-    if(!result.success){
-        showAuthMessage(result.message);
-        return;
-    }
+    const result =
+    await registerUser(username, password);
 
-    setCurrentUser(result.user);
-
-    window.location.href = "pages/dashboard.html";
+    showAuthMessage(result.message);
 }
 
 function showAuthMessage(text){
     document.getElementById("authMessage").innerText = text;
 }
-
