@@ -129,3 +129,25 @@ footer a {
     color: #38bdf8;
     text-decoration: none;
 }
+.district-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.district-card {
+    padding: 16px;
+    border-radius: 18px;
+    background: #020617;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.district-owner {
+    margin-top: 8px;
+    color: #facc15;
+    font-weight: bold;
+}
+
+.district-empty {
+    color: #94a3b8;
+}
