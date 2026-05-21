@@ -19,11 +19,19 @@ function createPlayer(){
     const player = {
         name:playerName,
         team:selectedTeam,
+        role:"member",
         energy:100
     };
+
+    addPlayerToTeam(selectedTeam, playerName);
 
     saveData("player",player);
 
     window.location.href =
     "pages/dashboard.html";
+}
+
+function logoutPlayer(){
+    localStorage.removeItem("player");
+    window.location.href = "../index.html";
 }
