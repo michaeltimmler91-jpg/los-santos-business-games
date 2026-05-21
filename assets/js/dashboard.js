@@ -18,6 +18,15 @@ function initDashboard(){
     document
     .getElementById("actionBtn")
     .addEventListener("click", performPlayerAction);
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if(logoutBtn){
+        logoutBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            logoutPlayer();
+        });
+    }
 }
 
 function updatePlayerInfo(){
