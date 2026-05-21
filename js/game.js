@@ -4,6 +4,7 @@ let lastAttackTime = 0;
 
 const attackCooldownMs =
 60000;
+let cooldownInterval = null;
 
 const districts = [
     "Mirror Park",
@@ -386,6 +387,7 @@ if (remaining > 0) {
 }
 
 lastAttackTime = now;
+    startAttackCooldown();
     const districtId =
     Number(
         document.getElementById(
@@ -500,5 +502,54 @@ lastAttackTime = now;
 
     await loadDistricts();
     await loadActionFeed();
+}
+function startAttackCooldown() {
+
+    clearInterval(
+        cooldownInterval
+    );
+
+    const button =
+    document.querySelector(
+        'button[onclick="attackDistrict()"]'
+    );
+
+    if (!button) return;
+
+    button.disabled = true;
+
+    cooldownInterval =
+    setInterval(() => {
+
+        const now =
+        Date.now();
+
+        const remaining =
+        attackCooldownMs -
+        (now - lastAttackTime);
+
+        if (remaining <= 0) {
+
+            clearInterval(
+                cooldownInterval
+            );
+
+            button.disabled = false;
+
+            button.innerHTML =
+            "⚔️ Gebiet angreifen";
+
+            return;
+        }
+
+        const seconds =
+        Math.ceil(
+            remaining / 1000
+        );
+
+        button.innerHTML =
+        `⏳ ${seconds}s`;
+
+    }, 250);
 }
 initGame();
