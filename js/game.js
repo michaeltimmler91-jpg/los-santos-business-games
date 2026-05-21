@@ -253,6 +253,7 @@ function setupRealtime() {
         )
         .subscribe();
 }
+
 async function loadDistricts() {
     const { data, error } = await db
         .from("game_districts")
@@ -274,22 +275,19 @@ async function loadDistricts() {
         return;
     }
 
-    const box =
-    document.getElementById("districtGrid");
+    const box = document.getElementById("districtGrid");
 
     if (!box) return;
 
     box.innerHTML = "";
 
     if (!data || data.length === 0) {
-        box.innerHTML =
-        "Noch keine Gebiete.";
+        box.innerHTML = "Noch keine Gebiete.";
         return;
     }
 
     data.forEach(district => {
-        const owner =
-        district.game_companies;
+        const owner = district.game_companies;
 
         box.innerHTML += `
             <div class="district-card">
@@ -309,27 +307,22 @@ async function loadDistricts() {
             </div>
         `;
     });
+
+    const attackSelect =
+    document.getElementById("districtAttackSelect");
+
+    if (attackSelect) {
+        attackSelect.innerHTML = "";
+
+        data.forEach(district => {
+            attackSelect.innerHTML += `
+                <option value="${district.id}">
+                    ${district.name}
+                </option>
+            `;
+        });
+    }
 }
-
-const attackSelect =
-document.getElementById(
-    "districtAttackSelect"
-);
-
-if (attackSelect) {
-
-    attackSelect.innerHTML = "";
-
-    data.forEach(district => {
-
-        attackSelect.innerHTML += `
-            <option value="${district.id}">
-                ${district.name}
-            </option>
-        `;
-    });
-}
-
 async function attackDistrict() {
 
     if (!currentPlayer) return;
