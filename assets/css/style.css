@@ -416,3 +416,56 @@ nav a:hover{
 .small-danger-btn:hover{
     background:#b91c1c;
 }
+.admin-team-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.admin-team-card{
+    background:#111827;
+    padding:16px;
+    border-radius:14px;
+}
+
+.admin-team-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.admin-team-head p{
+    color:#9ca3af;
+    margin-top:4px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:#d1d5db;
+}
+
+select{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-bottom:12px;
+    font-size:15px;
+}
+
+input[type="color"]{
+    height:50px;
+    padding:4px;
+}
+
+.badge{
+    display:inline-block;
+    margin-left:8px;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#facc15;
+    color:#111827;
+    font-size:12px;
+}
