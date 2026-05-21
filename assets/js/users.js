@@ -86,3 +86,4 @@ function updateCurrentUser(updatedUser){
         setCurrentUser(updatedUser);
     }
 }
+
