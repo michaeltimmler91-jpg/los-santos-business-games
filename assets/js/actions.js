@@ -1,33 +1,62 @@
 function performPlayerAction(){
-    const player = loadData("player");
 
-    if(!player){
+    const user = getCurrentUser();
+
+    if(!user){
         return;
     }
 
-    if(player.energy < GAME_CONFIG.actionEnergyCost){
-        showActionMessage("Nicht genug Energie. Bitte warte oder lade Energie auf.");
+    if(!user.teamId){
+
+        showActionMessage(
+            "Du musst zuerst einem Team beitreten."
+        );
+
         return;
     }
 
-    player.energy -= GAME_CONFIG.actionEnergyCost;
+    if(user.energy < GAME_CONFIG.actionEnergyCost){
+
+        showActionMessage(
+            "Nicht genug Energie."
+        );
+
+        return;
+    }
+
+    user.energy -= GAME_CONFIG.actionEnergyCost;
 
     const points =
         Math.floor(
             Math.random() *
-            (GAME_CONFIG.maxPointsPerAction - GAME_CONFIG.minPointsPerAction + 1)
-        ) + GAME_CONFIG.minPointsPerAction;
+            (
+                GAME_CONFIG.maxPointsPerAction -
+                GAME_CONFIG.minPointsPerAction + 1
+            )
+        ) +
+        GAME_CONFIG.minPointsPerAction;
 
-    addPointsToTeam(player.team, points);
+    addPointsToTeam(
+        user.teamId,
+        points
+    );
 
-    saveData("player", player);
+    updateCurrentUser(user);
 
     updateEnergyDisplay();
+
     renderRanking();
 
-    showActionMessage("Du hast " + points + " Punkte für dein Team gesammelt!");
+    showActionMessage(
+        "Du hast " +
+        points +
+        " Punkte gesammelt."
+    );
 }
 
 function showActionMessage(text){
-    document.getElementById("actionMessage").innerText = text;
+
+    document.getElementById(
+        "actionMessage"
+    ).innerText = text;
 }
