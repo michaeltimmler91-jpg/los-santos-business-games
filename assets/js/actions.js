@@ -1,10 +1,12 @@
 function performPlayerAction(){
 
-    const user = getCurrentUser();
+    let user = getCurrentUser();
 
     if(!user){
         return;
     }
+
+    user = regenerateEnergy(user);
 
     if(!user.teamId){
 
@@ -12,19 +14,26 @@ function performPlayerAction(){
             "Du musst zuerst einem Team beitreten."
         );
 
+        updateCurrentUser(user);
+
         return;
     }
 
     if(user.energy < GAME_CONFIG.actionEnergyCost){
 
         showActionMessage(
-            "Nicht genug Energie."
+            "Nicht genug Energie. Bitte warte kurz."
         );
+
+        updateCurrentUser(user);
+
+        updateEnergyDisplay();
 
         return;
     }
 
     user.energy -= GAME_CONFIG.actionEnergyCost;
+    user.lastEnergyUpdate = Date.now();
 
     const points =
         Math.floor(
