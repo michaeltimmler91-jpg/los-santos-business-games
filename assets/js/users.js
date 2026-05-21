@@ -39,7 +39,8 @@ function createUser(username, password){
         password:password,
         teamId:null,
         role:"user",
-        energy:100
+        energy:GAME_CONFIG.maxEnergy,
+        lastEnergyUpdate:Date.now()
     };
 
     users.push(newUser);
@@ -65,15 +66,31 @@ function loginUser(username, password){
         };
     }
 
-    setCurrentUser(user);
+    if(typeof user.energy !== "number"){
+        user.energy = GAME_CONFIG.maxEnergy;
+    }
+
+    if(!user.lastEnergyUpdate){
+        user.lastEnergyUpdate = Date.now();
+    }
+
+    const updatedUser = regenerateEnergy(user);
+
+    setCurrentUser(updatedUser);
+    updateUserInList(updatedUser);
 
     return {
         success:true,
-        user:user
+        user:updatedUser
     };
 }
 
 function updateCurrentUser(updatedUser){
+    updateUserInList(updatedUser);
+    setCurrentUser(updatedUser);
+}
+
+function updateUserInList(updatedUser){
     const users = getUsers();
 
     const index = users.findIndex(user => {
@@ -83,7 +100,39 @@ function updateCurrentUser(updatedUser){
     if(index !== -1){
         users[index] = updatedUser;
         saveUsers(users);
-        setCurrentUser(updatedUser);
     }
 }
 
+function regenerateEnergy(user){
+    const now = Date.now();
+
+    if(!user.lastEnergyUpdate){
+        user.lastEnergyUpdate = now;
+    }
+
+    const secondsPassed =
+        Math.floor((now - user.lastEnergyUpdate) / 1000);
+
+    const regenSteps =
+        Math.floor(secondsPassed / GAME_CONFIG.energyRegenSeconds);
+
+    if(regenSteps <= 0){
+        return user;
+    }
+
+    const energyToAdd =
+        regenSteps * GAME_CONFIG.energyRegenAmount;
+
+    user.energy = Math.min(
+        GAME_CONFIG.maxEnergy,
+        user.energy + energyToAdd
+    );
+
+    user.lastEnergyUpdate =
+        user.lastEnergyUpdate +
+        regenSteps *
+        GAME_CONFIG.energyRegenSeconds *
+        1000;
+
+    return user;
+}
