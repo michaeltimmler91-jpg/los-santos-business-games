@@ -136,3 +136,19 @@ function renderTeamsOverview(){
         wrapper.appendChild(card);
     });
 }
+function addPlayerToTeam(teamId, playerName){
+    const teams = getTeams();
+    const team = teams.find(t => t.id === teamId);
+
+    if(!team){
+        return;
+    }
+
+    const alreadyMember = team.members.includes(playerName);
+
+    if(!alreadyMember){
+        team.members.push(playerName);
+    }
+
+    saveTeams(teams);
+}
