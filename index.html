@@ -14,30 +14,28 @@
         <h1>TEAM WARS</h1>
 
         <p class="subtitle">
-            Wähle deinen Namen und tritt einem Team bei
+            Login oder Registrierung
         </p>
 
-        <input
-            type="text"
-            id="playerName"
-            placeholder="Spielername"
-        >
+        <input type="text" id="usernameInput" placeholder="Benutzername">
+        <input type="password" id="passwordInput" placeholder="Passwort">
 
-        <div id="teamList" class="team-list"></div>
-
-        <button id="startGameBtn">
-            Spiel starten
+        <button id="loginBtn">
+            Einloggen
         </button>
+
+        <button id="registerBtn" class="secondary-btn">
+            Registrieren
+        </button>
+
+        <p id="authMessage" class="message"></p>
 
     </div>
 
     <script src="assets/js/config.js"></script>
     <script src="assets/js/storage.js"></script>
-    <script src="assets/js/teams.js"></script>
-    <script src="assets/js/player.js"></script>
+    <script src="assets/js/users.js"></script>
     <script src="assets/js/app.js"></script>
 
 </body>
 </html>
-
-
