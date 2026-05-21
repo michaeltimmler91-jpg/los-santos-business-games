@@ -13,3 +13,4 @@ function loadData(key){
         ? JSON.parse(data)
         : null;
 }
+
