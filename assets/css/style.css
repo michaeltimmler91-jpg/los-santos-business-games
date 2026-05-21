@@ -469,3 +469,11 @@ input[type="color"]{
     color:#111827;
     font-size:12px;
 }
+.secondary-btn{
+    margin-top:10px;
+    background:#374151;
+}
+
+.secondary-btn:hover{
+    background:#4b5563;
+}
