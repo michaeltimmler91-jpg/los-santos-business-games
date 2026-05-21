@@ -77,11 +77,6 @@ const boostPads = [
     { x: 1048, y: 700, w: 44, h: 120 }
 ];
 
-const checkpoints = {
-    cp1: { x: 930, y: 600, w: 120, h: 240 },
-    cp2: { x: 560, y: 980, w: 240, h: 120 },
-    cp3: { x: 1500, y: 300, w: 120, h: 240 }
-};
 
 const checkpoints = {
     cp1: { x: 1240, y: 300, w: 140, h: 160 },
