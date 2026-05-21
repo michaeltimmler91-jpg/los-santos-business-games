@@ -2,7 +2,10 @@ const GAME_CONFIG = {
     actionEnergyCost:20,
     minPointsPerAction:5,
     maxPointsPerAction:20,
-    maxEnergy:100
+    maxEnergy:100,
+
+    energyRegenAmount:5,
+    energyRegenSeconds:30
 };
 
 const DEFAULT_TEAMS = [
