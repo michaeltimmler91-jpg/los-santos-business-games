@@ -6,17 +6,21 @@ function initDashboard(){
 
     initTeamsIfNeeded();
 
-    const user = getCurrentUser();
+    let user = getCurrentUser();
 
     if(!user){
         window.location.href = "../index.html";
         return;
     }
 
+    user = regenerateEnergy(user);
+    updateCurrentUser(user);
+
     updatePlayerInfo();
     updateEnergyDisplay();
     renderRanking();
     renderTeamSelection();
+    startEnergyTimer();
 
     document
     .getElementById("actionBtn")
@@ -61,13 +65,22 @@ function updatePlayerInfo(){
 
 function updateEnergyDisplay(){
 
-    const user = getCurrentUser();
+    let user = getCurrentUser();
+
+    user = regenerateEnergy(user);
+    updateCurrentUser(user);
 
     document.getElementById("energyText").innerText =
-        user.energy + " / 100";
+        user.energy + " / " + GAME_CONFIG.maxEnergy;
 
     document.getElementById("energyFill").style.width =
         user.energy + "%";
+}
+
+function startEnergyTimer(){
+    setInterval(() => {
+        updateEnergyDisplay();
+    }, 1000);
 }
 
 function renderTeamSelection(){
