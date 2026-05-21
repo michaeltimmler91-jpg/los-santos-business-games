@@ -386,3 +386,33 @@ nav a:hover{
     width:28px;
     height:28px;
 }
+
+.member-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.member-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    background:#111827;
+    padding:12px;
+    border-radius:12px;
+}
+
+.member-row span{
+    font-weight:bold;
+}
+
+.small-danger-btn{
+    width:auto;
+    padding:8px 12px;
+    background:#dc2626;
+}
+
+.small-danger-btn:hover{
+    background:#b91c1c;
+}
