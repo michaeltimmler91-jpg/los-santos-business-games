@@ -152,3 +152,11 @@ function addPlayerToTeam(teamId, playerName){
 
     saveTeams(teams);
 }
+function getTeamById(teamId){
+
+    const teams = getTeams();
+
+    return teams.find(team => {
+        return team.id === teamId;
+    });
+}
