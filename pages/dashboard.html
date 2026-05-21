@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Wars - Dashboard</title>
 
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <div class="game-container">
+
+        <header class="game-header">
+            <div>
+                <h1>TEAM WARS</h1>
+                <p id="playerInfo">Lade Spieler...</p>
+            </div>
+
+            <nav>
+                <a href="dashboard.html">Spiel</a>
+                <a href="ranking.html">Rangliste</a>
+                <a href="teams.html">Teams</a>
+                <a href="team-admin.html">Teamleitung</a>
+                <a href="admin.html">Admin</a>
+            </nav>
+        </header>
+
+        <main class="dashboard-grid">
+
+            <section class="panel">
+                <h2>Deine Aktion</h2>
+
+                <p class="info-text">
+                    Führe Aktionen aus, sammle Punkte und unterstütze dein Team.
+                </p>
+
+                <div class="energy-box">
+                    <span>Energie</span>
+                    <div class="energy-bar">
+                        <div id="energyFill"></div>
+                    </div>
+                    <strong id="energyText">100 / 100</strong>
+                </div>
+
+                <button id="actionBtn">
+                    Aktion ausführen
+                </button>
+
+                <p id="actionMessage" class="message"></p>
+            </section>
+
+            <section class="panel">
+                <h2>Team-Rangliste</h2>
+                <div id="rankingList" class="ranking-list"></div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/storage.js"></script>
+    <script src="../assets/js/teams.js"></script>
+    <script src="../assets/js/player.js"></script>
+    <script src="../assets/js/actions.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+
+</body>
+</html>
