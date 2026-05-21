@@ -353,21 +353,7 @@ async function loadDistricts() {
     }
 }
 
-    const attackSelect =
-    document.getElementById("districtAttackSelect");
 
-    if (attackSelect) {
-        attackSelect.innerHTML = "";
-
-        data.forEach(district => {
-            attackSelect.innerHTML += `
-                <option value="${district.id}">
-                    ${district.name}
-                </option>
-            `;
-        });
-    }
-}
 async function attackDistrict() {
 
     if (!currentPlayer) return;
