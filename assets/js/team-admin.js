@@ -19,6 +19,22 @@ function initTeamAdmin(){
         return;
     }
 
+    if(team.leader !== player.name){
+        document.querySelector("main").innerHTML = `
+            <section class="panel">
+                <h2>Kein Zugriff</h2>
+                <p class="info-text">
+                    Nur der Teamleiter von ${team.name} darf diesen Bereich verwalten.
+                </p>
+            </section>
+        `;
+
+        document.getElementById("teamAdminInfo").innerText =
+            "Keine Berechtigung";
+
+        return;
+    }
+
     document.getElementById("teamAdminInfo").innerText =
         "Verwaltung für " + team.name;
 
@@ -69,6 +85,11 @@ function removeMemberFromTeam(memberName){
         return;
     }
 
+    if(team.leader === memberName){
+        showTeamAdminMessage("Der Teamleiter kann nicht entfernt werden.");
+        return;
+    }
+
     team.members = team.members.filter(member => {
         return member !== memberName;
     });
@@ -100,8 +121,13 @@ function renderMemberList(){
 
         row.className = "member-row";
 
+        const leaderBadge =
+            team.leader === member
+                ? "<span class='badge'>Teamleiter</span>"
+                : "";
+
         row.innerHTML = `
-            <span>${member}</span>
+            <span>${member} ${leaderBadge}</span>
             <button class="small-danger-btn">
                 Entfernen
             </button>
@@ -118,5 +144,9 @@ function renderMemberList(){
 }
 
 function showTeamAdminMessage(text){
-    document.getElementById("teamAdminMessage").innerText = text;
+    const message = document.getElementById("teamAdminMessage");
+
+    if(message){
+        message.innerText = text;
+    }
 }
