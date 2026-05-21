@@ -21,17 +21,23 @@ window.addEventListener("keyup", e => {
 });
 
 const player = {
-    x: 500,
-    y: 500,
+    x: 1420,
+    y: 620,
     width: 42,
     height: 24,
-    angle: 0,
+    angle: Math.PI / 2,
     speed: 0,
     maxSpeed: 7,
     acceleration: 0.15,
     friction: 0.965,
     turnSpeed: 0.045,
-    color: "#ff4fd8"
+    color: "#ff4fd8",
+    lap: 1,
+    checkpoints: {
+        top: false,
+        left: false,
+        bottom: false
+    }
 };
 
 const track = {
@@ -43,7 +49,19 @@ const track = {
     innerRadiusY: 230
 };
 
+const race = {
+    totalLaps: 3,
+    finished: false,
+    startTime: Date.now(),
+    finishTime: null
+};
+
 function update() {
+    if (race.finished) {
+        updateUI();
+        return;
+    }
+
     if (keys["w"]) {
         player.speed += player.acceleration;
     }
@@ -83,6 +101,8 @@ function update() {
         player.speed *= -0.35;
     }
 
+    checkCheckpoints();
+    checkFinishLine();
     updateUI();
 }
 
@@ -117,6 +137,60 @@ function isOnRoad(x, y) {
     );
 
     return insideOuter && !insideInner;
+}
+
+function checkCheckpoints() {
+    if (
+        player.y < track.centerY - 350
+    ) {
+        player.checkpoints.top = true;
+    }
+
+    if (
+        player.x < track.centerX - 600
+    ) {
+        player.checkpoints.left = true;
+    }
+
+    if (
+        player.y > track.centerY + 350
+    ) {
+        player.checkpoints.bottom = true;
+    }
+}
+
+function checkFinishLine() {
+    const finishX =
+    track.centerX + track.innerRadiusX;
+
+    const nearFinishX =
+    Math.abs(player.x - finishX) < 35;
+
+    const nearFinishY =
+    player.y > track.centerY - 110 &&
+    player.y < track.centerY + 110;
+
+    if (
+        nearFinishX &&
+        nearFinishY &&
+        player.checkpoints.top &&
+        player.checkpoints.left &&
+        player.checkpoints.bottom
+    ) {
+        player.lap++;
+
+        player.checkpoints.top = false;
+        player.checkpoints.left = false;
+        player.checkpoints.bottom = false;
+
+        if (player.lap > race.totalLaps) {
+            race.finished = true;
+            race.finishTime = Date.now();
+
+            document.getElementById("lap").innerHTML =
+            "🏁 ZIEL!";
+        }
+    }
 }
 
 function drawTrack() {
@@ -200,6 +274,7 @@ function drawTrack() {
     ctx.setLineDash([]);
 
     drawFinishLine();
+    drawCheckpointMarkers();
 }
 
 function drawFinishLine() {
@@ -226,6 +301,31 @@ function drawFinishLine() {
             );
         }
     }
+}
+
+function drawCheckpointMarkers() {
+    ctx.fillStyle = "rgba(34,197,94,0.35)";
+
+    ctx.fillRect(
+        track.centerX - 120,
+        track.centerY - 500,
+        240,
+        35
+    );
+
+    ctx.fillRect(
+        track.centerX - 820,
+        track.centerY - 120,
+        35,
+        240
+    );
+
+    ctx.fillRect(
+        track.centerX - 120,
+        track.centerY + 465,
+        240,
+        35
+    );
 }
 
 function drawPlayer() {
@@ -316,6 +416,57 @@ function drawWorldDetails() {
     }
 }
 
+function drawFinishOverlay() {
+    if (!race.finished) return;
+
+    const time =
+    ((race.finishTime - race.startTime) / 1000)
+    .toFixed(2);
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.72)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle =
+    "white";
+
+    ctx.font =
+    "bold 58px Arial";
+
+    ctx.textAlign =
+    "center";
+
+    ctx.fillText(
+        "🏁 ZIEL!",
+        canvas.width / 2,
+        canvas.height / 2 - 40
+    );
+
+    ctx.font =
+    "bold 28px Arial";
+
+    ctx.fillText(
+        `Zeit: ${time}s`,
+        canvas.width / 2,
+        canvas.height / 2 + 15
+    );
+
+    ctx.font =
+    "20px Arial";
+
+    ctx.fillText(
+        "Seite neu laden f&uuml;r Neustart",
+        canvas.width / 2,
+        canvas.height / 2 + 60
+    );
+}
+
 function draw() {
     ctx.clearRect(
         0,
@@ -336,11 +487,18 @@ function draw() {
     drawPlayer();
 
     ctx.restore();
+
+    drawFinishOverlay();
 }
 
 function updateUI() {
     document.getElementById("speed").innerHTML =
     `🚕 ${Math.abs(Math.round(player.speed * 40))} km/h`;
+
+    if (!race.finished) {
+        document.getElementById("lap").innerHTML =
+        `🏁 Runde ${player.lap}/${race.totalLaps}`;
+    }
 }
 
 function gameLoop() {
