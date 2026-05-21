@@ -2,11 +2,76 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Los Santos Business Games</title>
+
+    <link rel="stylesheet" href="css/style.css?v=1">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<h1>🏆 Los Santos Business Games</h1>
+<div class="app">
 
+    <header class="hero">
+        <h1>🏆 Los Santos Business Games</h1>
+        <p>Firmen k&auml;mpfen um Punkte, Ruhm und Stadtgebiete.</p>
+    </header>
+
+    <section class="grid">
+
+        <div class="card">
+            <h2>🎮 Spiel beitreten</h2>
+
+            <label>Spielername</label>
+            <input id="playerName" type="text" placeholder="z.B. Lennox">
+
+            <label>Firma</label>
+            <select id="companySelect"></select>
+
+            <label>Firmen-Code</label>
+            <input id="joinCode" type="text" placeholder="z.B. TAXI-1234">
+
+            <button onclick="joinGame()">Beitreten</button>
+
+            <div id="joinMessage" class="message"></div>
+        </div>
+
+        <div class="card">
+            <h2>🏆 Live Rangliste</h2>
+            <div id="leaderboard">L&auml;dt...</div>
+        </div>
+
+    </section>
+
+    <section id="gameBox" class="card" style="display:none;">
+        <h2 id="playerInfo">Spieler</h2>
+
+        <div class="action-grid">
+            <button onclick="playAction('lieferung')">📦 Lieferung</button>
+            <button onclick="playAction('einsatz')">🚨 Einsatz</button>
+            <button onclick="playAction('support')">🤝 Support</button>
+            <button onclick="playAction('chaos')">🪩 Chaos</button>
+        </div>
+
+        <div id="actionResult" class="result-box">
+            Bereit.
+        </div>
+
+        <button class="secondary" onclick="leaveGame()">Firma wechseln</button>
+    </section>
+
+    <section class="card">
+        <h2>📻 Live Ereignisse</h2>
+        <div id="actionFeed">L&auml;dt...</div>
+    </section>
+
+    <footer>
+        <a href="admin.html">Adminbereich</a>
+    </footer>
+
+</div>
+
+<script src="js/config.js?v=1"></script>
+<script src="js/game.js?v=1"></script>
 </body>
 </html>
