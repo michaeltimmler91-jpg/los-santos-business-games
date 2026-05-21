@@ -56,6 +56,24 @@ const race = {
     finishTime: null
 };
 
+const boostPads = [
+
+    {
+        x: 880,
+        y: 320,
+        width: 240,
+        height: 40
+    },
+
+    {
+        x: 880,
+        y: 1040,
+        width: 240,
+        height: 40
+    }
+
+];
+
 function update() {
     if (race.finished) {
         updateUI();
@@ -103,8 +121,9 @@ function update() {
 
     checkCheckpoints();
     checkFinishLine();
+    checkBoostPads();
     updateUI();
-}
+    }
 
 function isInsideEllipse(x, y, rx, ry) {
     const dx =
@@ -273,10 +292,61 @@ function drawTrack() {
 
     ctx.setLineDash([]);
 
+    drawBoostPads();
     drawFinishLine();
     drawCheckpointMarkers();
-}
+    }
+function drawBoostPads() {
 
+    boostPads.forEach(pad => {
+
+        ctx.fillStyle =
+        "#22c55e";
+
+        ctx.fillRect(
+            pad.x,
+            pad.y,
+            pad.width,
+            pad.height
+        );
+
+        ctx.strokeStyle =
+        "#86efac";
+
+        ctx.lineWidth = 4;
+
+        ctx.strokeRect(
+            pad.x,
+            pad.y,
+            pad.width,
+            pad.height
+        );
+
+        ctx.fillStyle =
+        "rgba(255,255,255,0.45)";
+
+        for (
+            let i = 0;
+            i < pad.width;
+            i += 40
+        ) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                pad.x + i,
+                pad.y
+            );
+
+            ctx.lineTo(
+                pad.x + i + 25,
+                pad.y + pad.height
+            );
+
+            ctx.stroke();
+        }
+    });
+}
 function drawFinishLine() {
     const x =
     track.centerX + track.innerRadiusX;
@@ -326,6 +396,39 @@ function drawCheckpointMarkers() {
         240,
         35
     );
+}
+
+function checkBoostPads() {
+
+    boostPads.forEach(pad => {
+
+        if (
+
+            player.x >
+            pad.x &&
+
+            player.x <
+            pad.x + pad.width &&
+
+            player.y >
+            pad.y &&
+
+            player.y <
+            pad.y + pad.height
+
+        ) {
+
+            player.speed += 0.35;
+
+            if (
+                player.speed >
+                player.maxSpeed + 3
+            ) {
+                player.speed =
+                player.maxSpeed + 3;
+            }
+        }
+    });
 }
 
 function drawPlayer() {
