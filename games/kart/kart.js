@@ -21,11 +21,11 @@ window.addEventListener("keyup", e => {
 });
 
 const player = {
-    x: 1420,
-    y: 620,
+    x: 250,
+    y: 520,
     width: 42,
     height: 24,
-    angle: Math.PI / 2,
+    angle: 0,
     speed: 0,
     maxSpeed: 7,
     acceleration: 0.15,
@@ -34,19 +34,10 @@ const player = {
     color: "#ff4fd8",
     lap: 1,
     checkpoints: {
-        top: false,
-        left: false,
-        bottom: false
+        cp1: false,
+        cp2: false,
+        cp3: false
     }
-};
-
-const track = {
-    centerX: 1000,
-    centerY: 700,
-    outerRadiusX: 820,
-    outerRadiusY: 500,
-    innerRadiusX: 430,
-    innerRadiusY: 230
 };
 
 const race = {
@@ -56,23 +47,38 @@ const race = {
     finishTime: null
 };
 
-const boostPads = [
-
-    {
-        x: 880,
-        y: 320,
-        width: 240,
-        height: 40
-    },
-
-    {
-        x: 880,
-        y: 1040,
-        width: 240,
-        height: 40
-    }
-
+const roads = [
+    { x: 160, y: 460, w: 900, h: 140 },
+    { x: 920, y: 460, w: 140, h: 420 },
+    { x: 520, y: 740, w: 540, h: 140 },
+    { x: 520, y: 740, w: 140, h: 420 },
+    { x: 520, y: 1020, w: 780, h: 140 },
+    { x: 1160, y: 620, w: 140, h: 540 },
+    { x: 1160, y: 620, w: 520, h: 140 },
+    { x: 1540, y: 260, w: 140, h: 500 },
+    { x: 720, y: 260, w: 960, h: 140 },
+    { x: 720, y: 260, w: 140, h: 340 },
+    { x: 160, y: 460, w: 700, h: 140 }
 ];
+
+const boostPads = [
+    { x: 420, y: 500, w: 180, h: 44 },
+    { x: 1240, y: 660, w: 44, h: 180 },
+    { x: 820, y: 300, w: 200, h: 44 }
+];
+
+const checkpoints = {
+    cp1: { x: 930, y: 600, w: 120, h: 240 },
+    cp2: { x: 560, y: 980, w: 240, h: 120 },
+    cp3: { x: 1500, y: 300, w: 120, h: 240 }
+};
+
+const finishLine = {
+    x: 210,
+    y: 460,
+    w: 24,
+    h: 140
+};
 
 function update() {
     if (race.finished) {
@@ -119,88 +125,64 @@ function update() {
         player.speed *= -0.35;
     }
 
+    checkBoostPads();
     checkCheckpoints();
     checkFinishLine();
-    checkBoostPads();
     updateUI();
-    }
-
-function isInsideEllipse(x, y, rx, ry) {
-    const dx =
-    x - track.centerX;
-
-    const dy =
-    y - track.centerY;
-
-    return (
-        (dx * dx) / (rx * rx) +
-        (dy * dy) / (ry * ry)
-    ) <= 1;
 }
 
 function isOnRoad(x, y) {
-    const insideOuter =
-    isInsideEllipse(
-        x,
-        y,
-        track.outerRadiusX,
-        track.outerRadiusY
-    );
+    return roads.some(road => {
+        return (
+            x > road.x &&
+            x < road.x + road.w &&
+            y > road.y &&
+            y < road.y + road.h
+        );
+    });
+}
 
-    const insideInner =
-    isInsideEllipse(
-        x,
-        y,
-        track.innerRadiusX,
-        track.innerRadiusY
+function isInsideRect(x, y, rect) {
+    return (
+        x > rect.x &&
+        x < rect.x + rect.w &&
+        y > rect.y &&
+        y < rect.y + rect.h
     );
+}
 
-    return insideOuter && !insideInner;
+function checkBoostPads() {
+    boostPads.forEach(pad => {
+        if (isInsideRect(player.x, player.y, pad)) {
+            player.speed += 0.35;
+
+            if (player.speed > player.maxSpeed + 3) {
+                player.speed = player.maxSpeed + 3;
+            }
+        }
+    });
 }
 
 function checkCheckpoints() {
-    if (
-        player.y < track.centerY - 350
-    ) {
-        player.checkpoints.top = true;
-    }
-
-    if (
-        player.x < track.centerX - 600
-    ) {
-        player.checkpoints.left = true;
-    }
-
-    if (
-        player.y > track.centerY + 350
-    ) {
-        player.checkpoints.bottom = true;
-    }
+    Object.keys(checkpoints).forEach(key => {
+        if (isInsideRect(player.x, player.y, checkpoints[key])) {
+            player.checkpoints[key] = true;
+        }
+    });
 }
 
 function checkFinishLine() {
-    const finishX =
-    track.centerX + track.innerRadiusX;
-
-    const nearFinishX =
-    Math.abs(player.x - finishX) < 35;
-
-    const nearFinishY =
-    player.y > track.centerY - 110 &&
-    player.y < track.centerY + 110;
-
     if (
-        nearFinishX &&
-        nearFinishY &&
-        player.checkpoints.top &&
-        player.checkpoints.left &&
-        player.checkpoints.bottom
+        isInsideRect(player.x, player.y, finishLine) &&
+        player.checkpoints.cp1 &&
+        player.checkpoints.cp2 &&
+        player.checkpoints.cp3
     ) {
         player.lap++;
 
-        player.checkpoints.top = false;
-        player.checkpoints.left = false;
-        player.checkpoints.bottom = false;
+        player.checkpoints.cp1 = false;
+        player.checkpoints.cp2 = false;
+        player.checkpoints.cp3 = false;
 
         if (player.lap > race.totalLaps) {
             race.finished = true;
@@ -212,151 +194,89 @@ function checkFinishLine() {
     }
 }
 
-function drawTrack() {
+function drawWorld() {
     ctx.fillStyle = "#14532d";
-    ctx.fillRect(
-        track.centerX - 1000,
-        track.centerY - 700,
-        2000,
-        1400
-    );
+    ctx.fillRect(0, 0, 2200, 1500);
 
-    ctx.beginPath();
-    ctx.ellipse(
-        track.centerX,
-        track.centerY,
-        track.outerRadiusX,
-        track.outerRadiusY,
-        0,
-        0,
-        Math.PI * 2
-    );
-    ctx.fillStyle = "#374151";
-    ctx.fill();
+    drawBuildings();
+}
 
-    ctx.beginPath();
-    ctx.ellipse(
-        track.centerX,
-        track.centerY,
-        track.innerRadiusX,
-        track.innerRadiusY,
-        0,
-        0,
-        Math.PI * 2
-    );
-    ctx.fillStyle = "#14532d";
-    ctx.fill();
+function drawBuildings() {
+    ctx.fillStyle = "#111827";
 
-    ctx.strokeStyle = "#facc15";
-    ctx.lineWidth = 8;
+    const buildings = [
+        { x: 260, y: 180, w: 320, h: 180 },
+        { x: 1120, y: 180, w: 300, h: 180 },
+        { x: 240, y: 720, w: 220, h: 260 },
+        { x: 760, y: 900, w: 260, h: 90 },
+        { x: 1360, y: 840, w: 280, h: 300 },
+        { x: 1720, y: 420, w: 260, h: 260 }
+    ];
 
-    ctx.beginPath();
-    ctx.ellipse(
-        track.centerX,
-        track.centerY,
-        track.outerRadiusX,
-        track.outerRadiusY,
-        0,
-        0,
-        Math.PI * 2
-    );
-    ctx.stroke();
+    buildings.forEach(b => {
+        ctx.fillRect(b.x, b.y, b.w, b.h);
 
-    ctx.beginPath();
-    ctx.ellipse(
-        track.centerX,
-        track.centerY,
-        track.innerRadiusX,
-        track.innerRadiusY,
-        0,
-        0,
-        Math.PI * 2
-    );
-    ctx.stroke();
-
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
-    ctx.setLineDash([30, 30]);
-
-    ctx.beginPath();
-    ctx.ellipse(
-        track.centerX,
-        track.centerY,
-        625,
-        365,
-        0,
-        0,
-        Math.PI * 2
-    );
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    drawBoostPads();
-    drawFinishLine();
-    drawCheckpointMarkers();
-    }
-function drawBoostPads() {
-
-    boostPads.forEach(pad => {
-
-        ctx.fillStyle =
-        "#22c55e";
-
-        ctx.fillRect(
-            pad.x,
-            pad.y,
-            pad.width,
-            pad.height
-        );
-
-        ctx.strokeStyle =
-        "#86efac";
-
+        ctx.strokeStyle = "#334155";
         ctx.lineWidth = 4;
-
-        ctx.strokeRect(
-            pad.x,
-            pad.y,
-            pad.width,
-            pad.height
-        );
-
-        ctx.fillStyle =
-        "rgba(255,255,255,0.45)";
-
-        for (
-            let i = 0;
-            i < pad.width;
-            i += 40
-        ) {
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                pad.x + i,
-                pad.y
-            );
-
-            ctx.lineTo(
-                pad.x + i + 25,
-                pad.y + pad.height
-            );
-
-            ctx.stroke();
-        }
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
     });
 }
+
+function drawRoads() {
+    roads.forEach(road => {
+        ctx.fillStyle = "#374151";
+        ctx.fillRect(road.x, road.y, road.w, road.h);
+
+        ctx.strokeStyle = "#facc15";
+        ctx.lineWidth = 5;
+        ctx.strokeRect(road.x, road.y, road.w, road.h);
+
+        drawRoadLines(road);
+    });
+}
+
+function drawRoadLines(road) {
+    ctx.strokeStyle = "rgba(255,255,255,0.75)";
+    ctx.lineWidth = 3;
+    ctx.setLineDash([35, 25]);
+
+    ctx.beginPath();
+
+    if (road.w >= road.h) {
+        ctx.moveTo(road.x, road.y + road.h / 2);
+        ctx.lineTo(road.x + road.w, road.y + road.h / 2);
+    } else {
+        ctx.moveTo(road.x + road.w / 2, road.y);
+        ctx.lineTo(road.x + road.w / 2, road.y + road.h);
+    }
+
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function drawBoostPads() {
+    boostPads.forEach(pad => {
+        ctx.fillStyle = "#22c55e";
+        ctx.fillRect(pad.x, pad.y, pad.w, pad.h);
+
+        ctx.strokeStyle = "#86efac";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(pad.x, pad.y, pad.w, pad.h);
+    });
+}
+
+function drawCheckpoints() {
+    ctx.fillStyle = "rgba(34,197,94,0.18)";
+
+    Object.values(checkpoints).forEach(cp => {
+        ctx.fillRect(cp.x, cp.y, cp.w, cp.h);
+    });
+}
+
 function drawFinishLine() {
-    const x =
-    track.centerX + track.innerRadiusX;
+    const square = 14;
 
-    const y =
-    track.centerY - 80;
-
-    const square = 20;
-
-    for (let row = 0; row < 8; row++) {
+    for (let row = 0; row < 10; row++) {
         for (let col = 0; col < 2; col++) {
             ctx.fillStyle =
             (row + col) % 2 === 0
@@ -364,8 +284,8 @@ function drawFinishLine() {
             : "black";
 
             ctx.fillRect(
-                x + col * square,
-                y + row * square,
+                finishLine.x + col * square,
+                finishLine.y + row * square,
                 square,
                 square
             );
@@ -373,87 +293,13 @@ function drawFinishLine() {
     }
 }
 
-function drawCheckpointMarkers() {
-
-    ctx.fillStyle =
-    "rgba(34,197,94,0.28)";
-
-    // TOP
-
-    ctx.fillRect(
-        track.centerX - 140,
-        track.centerY - 410,
-        280,
-        80
-    );
-
-    // LINKS
-
-    ctx.fillRect(
-        track.centerX - 710,
-        track.centerY - 140,
-        80,
-        280
-    );
-
-    // BOTTOM
-
-    ctx.fillRect(
-        track.centerX - 140,
-        track.centerY + 330,
-        280,
-        80
-    );
-}
-
-function checkBoostPads() {
-
-    boostPads.forEach(pad => {
-
-        if (
-
-            player.x >
-            pad.x &&
-
-            player.x <
-            pad.x + pad.width &&
-
-            player.y >
-            pad.y &&
-
-            player.y <
-            pad.y + pad.height
-
-        ) {
-
-            player.speed += 0.35;
-
-            if (
-                player.speed >
-                player.maxSpeed + 3
-            ) {
-                player.speed =
-                player.maxSpeed + 3;
-            }
-        }
-    });
-}
-
 function drawPlayer() {
     ctx.save();
 
-    ctx.translate(
-        player.x,
-        player.y
-    );
+    ctx.translate(player.x, player.y);
+    ctx.rotate(player.angle);
 
-    ctx.rotate(
-        player.angle
-    );
-
-    ctx.fillStyle =
-    player.color;
-
+    ctx.fillStyle = player.color;
     ctx.fillRect(
         -player.width / 2,
         -player.height / 2,
@@ -461,70 +307,16 @@ function drawPlayer() {
         player.height
     );
 
-    ctx.fillStyle =
-    "white";
+    ctx.fillStyle = "white";
+    ctx.fillRect(5, -7, 14, 14);
 
-    ctx.fillRect(
-        5,
-        -7,
-        14,
-        14
-    );
-
-    ctx.fillStyle =
-    "#111827";
-
-    ctx.fillRect(
-        -16,
-        -14,
-        8,
-        5
-    );
-
-    ctx.fillRect(
-        8,
-        -14,
-        8,
-        5
-    );
-
-    ctx.fillRect(
-        -16,
-        9,
-        8,
-        5
-    );
-
-    ctx.fillRect(
-        8,
-        9,
-        8,
-        5
-    );
+    ctx.fillStyle = "#111827";
+    ctx.fillRect(-16, -14, 8, 5);
+    ctx.fillRect(8, -14, 8, 5);
+    ctx.fillRect(-16, 9, 8, 5);
+    ctx.fillRect(8, 9, 8, 5);
 
     ctx.restore();
-}
-
-function drawWorldDetails() {
-    ctx.fillStyle = "#22c55e";
-
-    for (let i = 0; i < 60; i++) {
-        const x =
-        (i * 173) % 2000;
-
-        const y =
-        (i * 291) % 1400;
-
-        ctx.beginPath();
-        ctx.arc(
-            x,
-            y,
-            6,
-            0,
-            Math.PI * 2
-        );
-        ctx.fill();
-    }
 }
 
 function drawFinishOverlay() {
@@ -534,24 +326,12 @@ function drawFinishOverlay() {
     ((race.finishTime - race.startTime) / 1000)
     .toFixed(2);
 
-    ctx.fillStyle =
-    "rgba(0,0,0,0.72)";
+    ctx.fillStyle = "rgba(0,0,0,0.72)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.fillStyle =
-    "white";
-
-    ctx.font =
-    "bold 58px Arial";
-
-    ctx.textAlign =
-    "center";
+    ctx.fillStyle = "white";
+    ctx.font = "bold 58px Arial";
+    ctx.textAlign = "center";
 
     ctx.fillText(
         "🏁 ZIEL!",
@@ -559,8 +339,7 @@ function drawFinishOverlay() {
         canvas.height / 2 - 40
     );
 
-    ctx.font =
-    "bold 28px Arial";
+    ctx.font = "bold 28px Arial";
 
     ctx.fillText(
         `Zeit: ${time}s`,
@@ -568,23 +347,17 @@ function drawFinishOverlay() {
         canvas.height / 2 + 15
     );
 
-    ctx.font =
-    "20px Arial";
+    ctx.font = "20px Arial";
 
     ctx.fillText(
-        "Seite neu laden f&uuml;r Neustart",
+        "Seite neu laden für Neustart",
         canvas.width / 2,
         canvas.height / 2 + 60
     );
 }
 
 function draw() {
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
 
@@ -593,8 +366,11 @@ function draw() {
         canvas.height / 2 - player.y
     );
 
-    drawWorldDetails();
-    drawTrack();
+    drawWorld();
+    drawRoads();
+    drawBoostPads();
+    drawCheckpoints();
+    drawFinishLine();
     drawPlayer();
 
     ctx.restore();
