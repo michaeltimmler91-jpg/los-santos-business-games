@@ -477,3 +477,48 @@ input[type="color"]{
 .secondary-btn:hover{
     background:#4b5563;
 }
+.admin-user-card{
+    background:#111827;
+    padding:18px;
+    border-radius:16px;
+    margin-bottom:14px;
+}
+
+.admin-user-head{
+    margin-bottom:14px;
+}
+
+.admin-user-head p{
+    color:#9ca3af;
+    margin-top:4px;
+}
+
+.admin-user-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.activate-btn{
+    background:#16a34a;
+}
+
+.activate-btn:hover{
+    background:#15803d;
+}
+
+.block-btn{
+    background:#dc2626;
+}
+
+.block-btn:hover{
+    background:#b91c1c;
+}
+
+.unblock-btn{
+    background:#2563eb;
+}
+
+.unblock-btn:hover{
+    background:#1d4ed8;
+}
