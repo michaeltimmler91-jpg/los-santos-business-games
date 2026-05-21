@@ -352,3 +352,37 @@ nav a:hover{
         width:90%;
     }
 }
+.teams-overview{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+
+.team-overview-card{
+    background:#1f2937;
+    padding:22px;
+    border-radius:20px;
+    border:2px solid transparent;
+    box-shadow:0 0 25px rgba(0,0,0,0.25);
+}
+
+.team-overview-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.team-overview-head h2{
+    margin-bottom:4px;
+}
+
+.team-overview-head p,
+.team-meta p{
+    color:#d1d5db;
+}
+
+.team-dot.large{
+    width:28px;
+    height:28px;
+}
