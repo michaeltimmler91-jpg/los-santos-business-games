@@ -58,3 +58,4 @@ function handleRegister(){
 function showAuthMessage(text){
     document.getElementById("authMessage").innerText = text;
 }
+
