@@ -36,7 +36,7 @@ async function registerUser(username, password){
             message:profileError.message
         };
     }
-
+    await supabaseClient.auth.signOut();
     return {
         success:true,
         message:"Account erstellt. Bitte warte auf Admin-Freischaltung."
