@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Wars - Teamleitung</title>
 
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <div class="game-container">
+
+        <header class="game-header">
+            <div>
+                <h1>Teamleitung</h1>
+                <p id="teamAdminInfo">Lade Teamdaten...</p>
+            </div>
+
+            <nav>
+                <a href="dashboard.html">Spiel</a>
+                <a href="ranking.html">Rangliste</a>
+                <a href="teams.html">Teams</a>
+                <a href="team-admin.html">Teamleitung</a>
+                <a href="admin.html">Admin</a>
+            </nav>
+        </header>
+
+        <main class="dashboard-grid">
+
+            <section class="panel">
+                <h2>Mitglied hinzufügen</h2>
+
+                <input
+                    type="text"
+                    id="newMemberName"
+                    placeholder="Spielername"
+                >
+
+                <button id="addMemberBtn">
+                    Mitglied hinzufügen
+                </button>
+
+                <p id="teamAdminMessage" class="message"></p>
+            </section>
+
+            <section class="panel">
+                <h2>Mitglieder</h2>
+                <div id="memberList" class="member-list"></div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/storage.js"></script>
+    <script src="../assets/js/teams.js"></script>
+    <script src="../assets/js/team-admin.js"></script>
+
+</body>
+</html>
