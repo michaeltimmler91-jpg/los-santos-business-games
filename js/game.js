@@ -289,6 +289,23 @@ async function loadDistricts() {
     data.forEach(district => {
         const owner = district.game_companies;
 
+        const maxStability =
+        district.max_stability || 100;
+
+        const stability =
+        district.stability ?? 100;
+
+        const percent =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                Math.round(
+                    stability / maxStability * 100
+                )
+            )
+        );
+
         box.innerHTML += `
             <div class="district-card">
                 <strong>📍 ${district.name}</strong>
@@ -304,9 +321,37 @@ async function loadDistricts() {
                         : "Noch neutral"
                     }
                 </div>
+
+                <div class="stability-bar">
+                    <div
+                        class="stability-fill"
+                        style="width:${percent}%"
+                    ></div>
+                </div>
+
+                <div class="stability-text">
+                    Stabilit&auml;t:
+                    ${stability}/${maxStability}
+                </div>
             </div>
         `;
     });
+
+    const attackSelect =
+    document.getElementById("districtAttackSelect");
+
+    if (attackSelect) {
+        attackSelect.innerHTML = "";
+
+        data.forEach(district => {
+            attackSelect.innerHTML += `
+                <option value="${district.id}">
+                    ${district.name}
+                </option>
+            `;
+        });
+    }
+}
 
     const attackSelect =
     document.getElementById("districtAttackSelect");
@@ -334,41 +379,93 @@ async function attackDistrict() {
         ).value
     );
 
-    const { data:district } =
+    const { data: district, error } =
     await db
-    .from("game_districts")
-    .select("*")
-    .eq("id", districtId)
-    .single();
+        .from("game_districts")
+        .select("*")
+        .eq("id", districtId)
+        .single();
 
-    if (!district) return;
+    if (error || !district) {
+        console.error(error);
+        return;
+    }
 
     const attackPower =
     Math.floor(
-        Math.random() * 120
-    ) + 20;
+        Math.random() * 31
+    ) + 10;
 
-    if (
-        attackPower >=
-        district.points_required
-    ) {
+    const currentStability =
+    district.stability ?? 100;
 
-        await db
-        .from("game_districts")
-        .update({
-            owner_company_id:
-            currentPlayer.company_id
-        })
-        .eq("id", district.id);
+    let newStability =
+    currentStability - attackPower;
 
-        document.getElementById(
-            "actionResult"
-        ).innerHTML = `
-            🏆 ${district.name}
-            wurde übernommen!
-        `;
+    let message = "";
+
+    if (newStability <= 0) {
+
+        newStability =
+        district.max_stability || 100;
 
         await db
+            .from("game_districts")
+            .update({
+                owner_company_id:
+                currentPlayer.company_id,
+
+                stability:
+                newStability,
+
+                last_attacked_at:
+                new Date().toISOString()
+            })
+            .eq("id", district.id);
+
+        message =
+        `🏆 ${district.name} wurde von ${currentPlayer.company_name} &uuml;bernommen!`;
+
+        await db
+            .from("game_actions")
+            .insert([{
+                company_id:
+                currentPlayer.company_id,
+
+                player_name:
+                currentPlayer.name,
+
+                action_type:
+                "Gebiet übernommen",
+
+                district:
+                district.name,
+
+                points:
+                attackPower
+            }]);
+
+    } else {
+
+        await db
+            .from("game_districts")
+            .update({
+                stability:
+                newStability,
+
+                last_attacked_at:
+                new Date().toISOString()
+            })
+            .eq("id", district.id);
+
+        message =
+        `⚔️ Angriff auf ${district.name}: -${attackPower} Stabilit&auml;t`;
+    }
+
+    document.getElementById("actionResult").innerHTML =
+    message;
+
+    await db
         .from("game_actions")
         .insert([{
             company_id:
@@ -378,7 +475,7 @@ async function attackDistrict() {
             currentPlayer.name,
 
             action_type:
-            "Gebiet übernommen",
+            "Gebiet angegriffen",
 
             district:
             district.name,
@@ -386,20 +483,6 @@ async function attackDistrict() {
             points:
             attackPower
         }]);
-
-    } else {
-
-        document.getElementById(
-            "actionResult"
-        ).innerHTML = `
-            ❌ Angriff auf
-            ${district.name}
-            fehlgeschlagen.
-            <br>
-            Angriffsstärke:
-            ${attackPower}
-        `;
-    }
 
     await loadDistricts();
     await loadActionFeed();
