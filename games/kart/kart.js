@@ -374,27 +374,35 @@ function drawFinishLine() {
 }
 
 function drawCheckpointMarkers() {
-    ctx.fillStyle = "rgba(34,197,94,0.35)";
+
+    ctx.fillStyle =
+    "rgba(34,197,94,0.28)";
+
+    // TOP
 
     ctx.fillRect(
-        track.centerX - 120,
-        track.centerY - 500,
-        240,
-        35
+        track.centerX - 140,
+        track.centerY - 410,
+        280,
+        80
     );
 
-    ctx.fillRect(
-        track.centerX - 820,
-        track.centerY - 120,
-        35,
-        240
-    );
+    // LINKS
 
     ctx.fillRect(
-        track.centerX - 120,
-        track.centerY + 465,
-        240,
-        35
+        track.centerX - 710,
+        track.centerY - 140,
+        80,
+        280
+    );
+
+    // BOTTOM
+
+    ctx.fillRect(
+        track.centerX - 140,
+        track.centerY + 330,
+        280,
+        80
     );
 }
 
