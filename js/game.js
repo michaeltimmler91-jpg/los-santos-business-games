@@ -310,4 +310,105 @@ async function loadDistricts() {
         `;
     });
 }
+
+const attackSelect =
+document.getElementById(
+    "districtAttackSelect"
+);
+
+if (attackSelect) {
+
+    attackSelect.innerHTML = "";
+
+    data.forEach(district => {
+
+        attackSelect.innerHTML += `
+            <option value="${district.id}">
+                ${district.name}
+            </option>
+        `;
+    });
+}
+
+async function attackDistrict() {
+
+    if (!currentPlayer) return;
+
+    const districtId =
+    Number(
+        document.getElementById(
+            "districtAttackSelect"
+        ).value
+    );
+
+    const { data:district } =
+    await db
+    .from("game_districts")
+    .select("*")
+    .eq("id", districtId)
+    .single();
+
+    if (!district) return;
+
+    const attackPower =
+    Math.floor(
+        Math.random() * 120
+    ) + 20;
+
+    if (
+        attackPower >=
+        district.points_required
+    ) {
+
+        await db
+        .from("game_districts")
+        .update({
+            owner_company_id:
+            currentPlayer.company_id
+        })
+        .eq("id", district.id);
+
+        document.getElementById(
+            "actionResult"
+        ).innerHTML = `
+            🏆 ${district.name}
+            wurde übernommen!
+        `;
+
+        await db
+        .from("game_actions")
+        .insert([{
+            company_id:
+            currentPlayer.company_id,
+
+            player_name:
+            currentPlayer.name,
+
+            action_type:
+            "Gebiet übernommen",
+
+            district:
+            district.name,
+
+            points:
+            attackPower
+        }]);
+
+    } else {
+
+        document.getElementById(
+            "actionResult"
+        ).innerHTML = `
+            ❌ Angriff auf
+            ${district.name}
+            fehlgeschlagen.
+            <br>
+            Angriffsstärke:
+            ${attackPower}
+        `;
+    }
+
+    await loadDistricts();
+    await loadActionFeed();
+}
 initGame();
