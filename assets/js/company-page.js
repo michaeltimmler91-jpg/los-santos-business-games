@@ -51,56 +51,37 @@ function renderCompanyInfo(company){
 
     document.getElementById("companyPoints").innerText =
         "Punkte: " + company.points;
-const requiredXp =
-    getRequiredXpForLevel(company.level);
 
-const levelBonusPercent =
-    Math.floor(
-        getCompanyLevelBonus(company) * 100
-    );
-
-const levelInfo =
-document.createElement("p");
-
-levelInfo.className =
-"team-level";
-
-levelInfo.innerText =
-    "Level " +
-    company.level +
-    " | XP " +
-    (company.xp || 0) +
-    " / " +
-    requiredXp +
-    (
-        levelBonusPercent > 0
-        ? " | +" + levelBonusPercent + "% Firmenbonus"
-        : ""
-    );
-
-document
-.getElementById("companyPoints")
-.after(levelInfo);
     const requiredXp =
-    getRequiredXpForLevel(company.level);
+        getRequiredXpForLevel(company.level);
 
-const xpText =
-    "Level: " +
-    company.level +
-    " | XP: " +
-    company.xp +
-    " / " +
-    requiredXp;
+    const levelBonusPercent =
+        Math.floor(
+            getCompanyLevelBonus(company) * 100
+        );
 
-const xpElement =
-document.createElement("p");
+    const levelInfo =
+    document.createElement("p");
 
-xpElement.innerText =
-    xpText;
+    levelInfo.className =
+    "team-level";
 
-document
-.getElementById("companyPoints")
-.after(xpElement);
+    levelInfo.innerText =
+        "Level " +
+        company.level +
+        " | XP " +
+        (company.xp || 0) +
+        " / " +
+        requiredXp +
+        (
+            levelBonusPercent > 0
+            ? " | +" + levelBonusPercent + "% Firmenbonus"
+            : ""
+        );
+
+    document
+    .getElementById("companyPoints")
+    .after(levelInfo);
 
     const leaderName =
         company.leader && company.leader.username
