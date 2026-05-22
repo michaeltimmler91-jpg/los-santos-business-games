@@ -89,3 +89,22 @@ async function updateGameTeamLeader(teamId, leaderId){
         message:"Leitung wurde gespeichert."
     };
 }
+async function getCompanyById(teamId){
+
+    const { data, error } =
+    await supabaseClient
+    .from("game_teams")
+    .select(`
+        *,
+        leader:game_profiles(username)
+    `)
+    .eq("id", teamId)
+    .single();
+
+    if(error){
+        console.error(error);
+        return null;
+    }
+
+    return data;
+}

@@ -107,3 +107,45 @@ async function leaveCompany(){
         message:"Du hast die Firma verlassen."
     };
 }
+async function loadCompanyMembers(teamId){
+
+    const { data, error } =
+    await supabaseClient
+    .from("game_members")
+    .select(`
+        *,
+        profile:game_profiles(*)
+    `)
+    .eq("team_id", teamId)
+    .order("joined_at", {
+        ascending:true
+    });
+
+    if(error){
+        console.error(error);
+        return [];
+    }
+
+    return data;
+}
+
+async function removeCompanyMember(userId){
+
+    const { error } =
+    await supabaseClient
+    .from("game_members")
+    .delete()
+    .eq("user_id", userId);
+
+    if(error){
+        return {
+            success:false,
+            message:error.message
+        };
+    }
+
+    return {
+        success:true,
+        message:"Mitglied wurde entfernt."
+    };
+}

@@ -2,203 +2,76 @@ document.addEventListener("DOMContentLoaded", () => {
     initTeamAdmin();
 });
 
-function initTeamAdmin(){
+let currentProfile = null;
+let currentMembership = null;
+let currentCompany = null;
 
-    initTeamsIfNeeded();
+async function initTeamAdmin(){
 
-    const user = getCurrentUser();
+    currentProfile =
+    await getCurrentProfile();
 
-    if(!user){
-
-        window.location.href =
-        "../index.html";
-
+    if(!currentProfile){
+        window.location.href = "../index.html";
         return;
     }
 
-    if(!user.teamId){
+    currentMembership =
+    await getMyMembership();
 
-        showNoAccess(
-            "Du bist aktuell in keinem Team."
-        );
-
+    if(!currentMembership){
+        showNoAccess("Du bist aktuell in keiner Firma.");
         return;
     }
 
-    const team = getTeamById(
-        user.teamId
-    );
+    currentCompany =
+    await getCompanyById(currentMembership.team_id);
 
-    if(!team){
-
-        showNoAccess(
-            "Team wurde nicht gefunden."
-        );
-
+    if(!currentCompany){
+        showNoAccess("Firma wurde nicht gefunden.");
         return;
     }
 
-    if(team.leader !== user.username){
+    const isLeader =
+    currentCompany.leader_id === currentProfile.id;
 
-        showNoAccess(
-            "Nur der Teamleiter darf diesen Bereich verwalten."
-        );
+    const isAdmin =
+    currentProfile.role === "admin" ||
+    currentProfile.role === "owner";
 
+    if(!isLeader && !isAdmin){
+        showNoAccess("Nur die Firmenleitung oder ein Admin darf diesen Bereich verwalten.");
         return;
     }
 
-    document.getElementById(
-        "teamAdminInfo"
-    ).innerText =
-        "Verwaltung für " +
-        team.name;
+    document.getElementById("teamAdminInfo").innerText =
+        "Verwaltung für " + currentCompany.name;
+
+    document.getElementById("companyInfoText").innerText =
+        (currentCompany.description || "Keine Beschreibung") +
+        " | Punkte: " +
+        currentCompany.points;
 
     renderMemberList();
-
-    document
-    .getElementById("addMemberBtn")
-    .addEventListener(
-        "click",
-        addMemberFromInput
-    );
 }
 
-function addMemberFromInput(){
-
-    const user = getCurrentUser();
-
-    const team =
-    getTeamById(user.teamId);
-
-    const input =
-    document.getElementById(
-        "newMemberName"
-    );
-
-    const username =
-    input.value.trim();
-
-    if(!username){
-
-        showTeamAdminMessage(
-            "Bitte Spielernamen eingeben."
-        );
-
-        return;
-    }
-
-    const users = getUsers();
-
-    const targetUser =
-    users.find(u => {
-        return u.username === username;
-    });
-
-    if(!targetUser){
-
-        showTeamAdminMessage(
-            "Spieler existiert nicht."
-        );
-
-        return;
-    }
-
-    targetUser.teamId = team.id;
-
-    const updatedUsers =
-    users.map(u => {
-        return u.id === targetUser.id
-            ? targetUser
-            : u;
-    });
-
-    saveUsers(updatedUsers);
-
-    addPlayerToTeam(
-        team.id,
-        targetUser.username
-    );
-
-    input.value = "";
-
-    renderMemberList();
-
-    showTeamAdminMessage(
-        username +
-        " wurde hinzugefügt."
-    );
-}
-
-function removeMemberFromTeam(memberName){
-
-    const user =
-    getCurrentUser();
-
-    const team =
-    getTeamById(user.teamId);
-
-    if(team.leader === memberName){
-
-        showTeamAdminMessage(
-            "Teamleiter kann nicht entfernt werden."
-        );
-
-        return;
-    }
-
-    team.members =
-    team.members.filter(member => {
-        return member !== memberName;
-    });
-
-    const users = getUsers();
-
-    const updatedUsers =
-    users.map(u => {
-
-        if(u.username === memberName){
-            u.teamId = null;
-        }
-
-        return u;
-    });
-
-    saveUsers(updatedUsers);
-
-    saveTeams(getTeams());
-
-    renderMemberList();
-
-    showTeamAdminMessage(
-        memberName +
-        " wurde entfernt."
-    );
-}
-
-function renderMemberList(){
-
-    const user =
-    getCurrentUser();
-
-    const team =
-    getTeamById(user.teamId);
+async function renderMemberList(){
 
     const memberList =
-    document.getElementById(
-        "memberList"
-    );
+    document.getElementById("memberList");
+
+    const members =
+    await loadCompanyMembers(currentCompany.id);
 
     memberList.innerHTML = "";
 
-    if(team.members.length === 0){
-
+    if(members.length === 0){
         memberList.innerHTML =
-            "<p class='info-text'>Keine Mitglieder vorhanden.</p>";
-
+            "<p class='info-text'>Keine Mitarbeiter vorhanden.</p>";
         return;
     }
 
-    team.members.forEach(member => {
+    members.forEach(member => {
 
         const row =
         document.createElement("div");
@@ -206,30 +79,85 @@ function renderMemberList(){
         row.className =
         "member-row";
 
+        const username =
+        member.profile
+        ? member.profile.username
+        : "Unbekannt";
+
+        const isLeader =
+        currentCompany.leader_id === member.user_id;
+
         const leaderBadge =
-            team.leader === member
-            ? "<span class='badge'>Teamleiter</span>"
-            : "";
+        isLeader
+        ? "<span class='badge'>Leitung</span>"
+        : "";
 
         row.innerHTML = `
-            <span>${member} ${leaderBadge}</span>
+            <span>${username} ${leaderBadge}</span>
 
-            <button class="small-danger-btn">
-                Entfernen
-            </button>
+            <div class="member-actions">
+                <button class="set-leader-btn">
+                    Zur Leitung machen
+                </button>
+
+                <button class="small-danger-btn">
+                    Entfernen
+                </button>
+            </div>
         `;
 
         row
-        .querySelector("button")
-        .addEventListener(
-            "click",
-            () => {
-                removeMemberFromTeam(member);
-            }
-        );
+        .querySelector(".set-leader-btn")
+        .addEventListener("click", async () => {
+            await setMemberAsLeader(member.user_id);
+        });
+
+        row
+        .querySelector(".small-danger-btn")
+        .addEventListener("click", async () => {
+            await kickMember(member.user_id, username);
+        });
 
         memberList.appendChild(row);
     });
+}
+
+async function setMemberAsLeader(userId){
+
+    const result =
+    await updateGameTeamLeader(
+        currentCompany.id,
+        userId
+    );
+
+    showTeamAdminMessage(result.message);
+
+    currentCompany =
+    await getCompanyById(currentCompany.id);
+
+    renderMemberList();
+}
+
+async function kickMember(userId, username){
+
+    if(currentCompany.leader_id === userId){
+        showTeamAdminMessage("Die aktuelle Leitung kann nicht entfernt werden.");
+        return;
+    }
+
+    const confirmed =
+    confirm(username + " wirklich aus der Firma entfernen?");
+
+    if(!confirmed){
+        return;
+    }
+
+    const result =
+    await removeCompanyMember(userId);
+
+    showTeamAdminMessage(result.message);
+
+    renderMemberList();
 }
 
 function showNoAccess(text){
@@ -237,21 +165,20 @@ function showNoAccess(text){
     document.querySelector("main").innerHTML = `
         <section class="panel">
             <h2>Kein Zugriff</h2>
-            <p class="info-text">
-                ${text}
-            </p>
+            <p class="info-text">${text}</p>
         </section>
     `;
+
+    document.getElementById("teamAdminInfo").innerText =
+        "Keine Berechtigung";
 }
 
 function showTeamAdminMessage(text){
 
-    const msg =
-    document.getElementById(
-        "teamAdminMessage"
-    );
+    const message =
+    document.getElementById("teamAdminMessage");
 
-    if(msg){
-        msg.innerText = text;
+    if(message){
+        message.innerText = text;
     }
 }
