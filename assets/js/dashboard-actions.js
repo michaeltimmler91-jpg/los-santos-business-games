@@ -55,7 +55,18 @@ async function renderActions(){
 
     wrapper.innerHTML = "";
 
-    for(const action of GAME_ACTIONS){
+    const availableActions =
+        currentMembership && currentMembership.team
+        ? getActionsForCompany(currentMembership.team)
+        : [];
+
+if(availableActions.length === 0){
+    wrapper.innerHTML =
+        "<p class='info-text'>Für deine Firma gibt es aktuell keine passenden Aktionen.</p>";
+    return;
+}
+
+for(const action of availableActions){
 
         const cooldownData =
         await getCooldown(action.id);
@@ -192,7 +203,7 @@ async function executeAction(action){
         energy:newEnergy,
         last_energy_update:new Date().toISOString()
     })
-    
+
     .eq("id", currentProfile.id);
 
     if(error){
