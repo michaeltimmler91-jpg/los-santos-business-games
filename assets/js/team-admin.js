@@ -53,6 +53,7 @@ async function initTeamAdmin(){
         currentCompany.points;
 
     renderMemberList();
+    renderCompanyLogs();
 }
 
 async function renderMemberList(){
@@ -181,4 +182,50 @@ function showTeamAdminMessage(text){
     if(message){
         message.innerText = text;
     }
+}
+async function renderCompanyLogs(){
+
+    const wrapper =
+    document.getElementById("companyLogsList");
+
+    if(!wrapper){
+        return;
+    }
+
+    const logs =
+    await loadCompanyLogs(currentCompany.id);
+
+    wrapper.innerHTML = "";
+
+    if(logs.length === 0){
+        wrapper.innerHTML =
+            "<p class='info-text'>Noch keine Aktionen vorhanden.</p>";
+        return;
+    }
+
+    logs.forEach(log => {
+
+        const div =
+        document.createElement("div");
+
+        div.className =
+        "log-card";
+
+        const username =
+            log.profile && log.profile.username
+            ? log.profile.username
+            : "Unbekannt";
+
+        const date =
+        new Date(log.created_at).toLocaleString("de-DE");
+
+        div.innerHTML = `
+            <strong>${username}</strong>
+            <p>${log.action_title}</p>
+            <p>+${log.points} Punkte</p>
+            <small>${date}</small>
+        `;
+
+        wrapper.appendChild(div);
+    });
 }

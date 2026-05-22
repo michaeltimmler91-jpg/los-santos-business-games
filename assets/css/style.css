@@ -587,3 +587,23 @@ button:disabled{
     color:#cbd5e1;
     margin-bottom:6px;
 }
+.log-card{
+    background:#111827;
+    padding:14px;
+    border-radius:14px;
+    margin-bottom:10px;
+}
+
+.log-card strong{
+    display:block;
+    margin-bottom:6px;
+}
+
+.log-card p{
+    color:#cbd5e1;
+    margin-bottom:4px;
+}
+
+.log-card small{
+    color:#9ca3af;
+}
