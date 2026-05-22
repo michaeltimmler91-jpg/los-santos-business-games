@@ -9,8 +9,15 @@ async function createActivityLog(logData){
         action_id:logData.actionId,
         action_title:logData.actionTitle,
         points:logData.points,
-        base_points:logData.basePoints || logData.points,
-        bonus_points:logData.bonusPoints || 0
+        base_points:
+    logData.basePoints !== undefined
+    ? logData.basePoints
+    : logData.points,
+
+bonus_points:
+    logData.bonusPoints !== undefined
+    ? logData.bonusPoints
+    : 0
     });
 
     if(error){
