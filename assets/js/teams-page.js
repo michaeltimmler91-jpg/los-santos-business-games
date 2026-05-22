@@ -91,7 +91,12 @@ async function renderTeamsOverview(){
             </div>
 
             <div class="company-actions">
-                ${buttonHtml}
+
+            <a class="detail-link" href="company.html?id=${team.id}">
+                Profil ansehen
+            </a>
+            
+            ${buttonHtml}
             </div>
         `;
 

@@ -607,3 +607,17 @@ button:disabled{
 .log-card small{
     color:#9ca3af;
 }
+.detail-link{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    background:#374151;
+    color:white;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.detail-link:hover{
+    background:#4b5563;
+}
