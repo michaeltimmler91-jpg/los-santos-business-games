@@ -1,37 +1,44 @@
-document.addEventListener("DOMContentLoaded", () => {
-    initTeamsIfNeeded();
-    renderTeamsOverview();
-});
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game - Firmen</title>
 
-function renderTeamsOverview(){
-    const wrapper = document.getElementById("teamsOverview");
-    const teams = getTeams();
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
-    wrapper.innerHTML = "";
+    <div class="game-container">
 
-    teams.forEach(team => {
-        const card = document.createElement("section");
+        <header class="game-header">
 
-        card.className = "team-overview-card";
-        card.style.borderColor = team.color;
-
-        const leaderName = team.leader ? team.leader : "Kein Teamleiter";
-
-        card.innerHTML = `
-            <div class="team-overview-head">
-                <span class="team-dot large" style="background:${team.color}"></span>
-                <div>
-                    <h2>${team.name}</h2>
-                    <p>${team.points} Punkte</p>
-                </div>
+            <div>
+                <h1>Firmen & Fraktionen</h1>
+                <p>Alle teilnehmenden Organisationen</p>
             </div>
 
-            <div class="team-meta">
-                <p><strong>Teamleiter:</strong> ${leaderName}</p>
-                <p><strong>Mitglieder:</strong> ${team.members.length}</p>
-            </div>
-        `;
+            <nav>
+                <a href="dashboard.html">Spiel</a>
+                <a href="teams.html">Firmen</a>
+                <a href="ranking.html">Rangliste</a>
+                <a href="team-admin.html">Firmenleitung</a>
+                <a href="admin.html">User-Admin</a>
+                <a href="admin-teams.html">Firmen-Admin</a>
+            </nav>
 
-        wrapper.appendChild(card);
-    });
-}
+        </header>
+
+        <main class="teams-overview" id="teamsOverview"></main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../assets/js/supabase.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/game-teams.js"></script>
+    <script src="../assets/js/teams-page.js"></script>
+
+</body>
+</html>

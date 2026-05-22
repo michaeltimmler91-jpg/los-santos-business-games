@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Wars - Rangliste</title>
+    <title>Game - Rangliste</title>
 
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
@@ -12,30 +12,38 @@
     <div class="game-container">
 
         <header class="game-header">
+
             <div>
                 <h1>Rangliste</h1>
-                <p>Aktueller Wochenstand aller Teams</p>
+                <p>Aktuelle Wochenwertung</p>
             </div>
 
             <nav>
                 <a href="dashboard.html">Spiel</a>
+                <a href="teams.html">Firmen</a>
                 <a href="ranking.html">Rangliste</a>
-                <a href="teams.html">Teams</a>
-                <a href="team-admin.html">Teamleitung</a>
-                <a href="admin.html">Admin</a>
+                <a href="team-admin.html">Firmenleitung</a>
+                <a href="admin.html">User-Admin</a>
+                <a href="admin-teams.html">Firmen-Admin</a>
             </nav>
+
         </header>
 
         <main class="panel">
-            <h2>Teamwertung</h2>
+
+            <h2>Firmenwertung</h2>
+
             <div id="rankingList" class="ranking-list"></div>
+
         </main>
 
     </div>
 
-    <script src="../assets/js/config.js"></script>
-    <script src="../assets/js/storage.js"></script>
-    <script src="../assets/js/teams.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../assets/js/supabase.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/game-teams.js"></script>
     <script src="../assets/js/ranking.js"></script>
 
 </body>
