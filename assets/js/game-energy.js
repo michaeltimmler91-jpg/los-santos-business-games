@@ -1,5 +1,5 @@
 const MAX_ENERGY = 100;
-const ENERGY_REGEN_SECONDS = 15;
+const ENERGY_REGEN_SECONDS = 300;
 const ENERGY_REGEN_AMOUNT = 10;
 
 function calculateRegeneratedEnergy(profile){
