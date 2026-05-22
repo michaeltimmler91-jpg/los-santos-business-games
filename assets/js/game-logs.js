@@ -8,7 +8,9 @@ async function createActivityLog(logData){
         team_id:logData.teamId,
         action_id:logData.actionId,
         action_title:logData.actionTitle,
-        points:logData.points
+        points:logData.points,
+        base_points:logData.basePoints || logData.points,
+        bonus_points:logData.bonusPoints || 0
     });
 
     if(error){

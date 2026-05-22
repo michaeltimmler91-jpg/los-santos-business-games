@@ -222,7 +222,14 @@ async function renderCompanyLogs(){
         div.innerHTML = `
             <strong>${username}</strong>
             <p>${log.action_title}</p>
-            <p>+${log.points} Punkte</p>
+            <p>
+    Grundpunkte: ${log.base_points || log.points}
+    ${log.bonus_points > 0 ? "| Eventbonus: +" + log.bonus_points : ""}
+</p>
+
+<p>
+    Gesamt: +${log.points} Punkte
+</p>
             <small>${date}</small>
         `;
 

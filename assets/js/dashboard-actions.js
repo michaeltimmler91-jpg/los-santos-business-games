@@ -244,11 +244,13 @@ if(levelResult && levelResult.leveledUp){
 }
 
     await createActivityLog({
-        userId:currentProfile.id,
-        teamId:currentMembership.team_id,
-        actionId:action.id,
-        actionTitle:action.title,
-        points:totalPoints
+    userId:currentProfile.id,
+    teamId:currentMembership.team_id,
+    actionId:action.id,
+    actionTitle:action.title,
+    points:totalPoints,
+    basePoints:points,
+    bonusPoints:bonusPoints
     });
 
     const taskResult =
