@@ -217,6 +217,21 @@ async function executeAction(action){
         points
     );
 
+    const levelResult =
+await addCompanyXp(
+    currentMembership.team_id,
+    points
+);
+
+if(levelResult && levelResult.leveledUp){
+
+    alert(
+        "🎉 Firmenlevel erhöht!\n" +
+        "Neues Level: " +
+        levelResult.level
+    );
+}
+
     await createActivityLog({
         userId:currentProfile.id,
         teamId:currentMembership.team_id,

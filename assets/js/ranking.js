@@ -53,7 +53,11 @@ async function renderRanking(){
             <span class="rank">${medal}</span>
             <span class="team-dot" style="background:${team.color}"></span>
             <strong>${team.name}</strong>
-            <span>${team.points} Punkte</span>
+            <span>
+                Level ${team.level}
+                |
+                ${team.points} Punkte
+            </span>
         `;
 
         rankingList.appendChild(div);

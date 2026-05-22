@@ -52,6 +52,27 @@ function renderCompanyInfo(company){
     document.getElementById("companyPoints").innerText =
         "Punkte: " + company.points;
 
+    const requiredXp =
+    getRequiredXpForLevel(company.level);
+
+const xpText =
+    "Level: " +
+    company.level +
+    " | XP: " +
+    company.xp +
+    " / " +
+    requiredXp;
+
+const xpElement =
+document.createElement("p");
+
+xpElement.innerText =
+    xpText;
+
+document
+.getElementById("companyPoints")
+.after(xpElement);
+
     const leaderName =
         company.leader && company.leader.username
         ? company.leader.username
