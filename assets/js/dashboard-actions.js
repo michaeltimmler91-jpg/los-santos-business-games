@@ -24,6 +24,7 @@ async function initDashboardActions(){
     renderDashboardHeader();
     renderActions();
     renderDailyTasks();
+    renderActiveEvent();
 }
 
 function renderDashboardHeader(){
@@ -211,12 +212,22 @@ async function executeAction(action){
         console.error(error);
         return;
     }
+    const activeEvent =
+await getActiveEvent();
 
+const bonusPoints =
+calculateEventBonus(
+    points,
+    currentMembership.team,
+    activeEvent
+);
+
+const totalPoints =
+points + bonusPoints;
     await addPointsToCompany(
-        currentMembership.team_id,
-        points
-    );
-
+    currentMembership.team_id,
+    totalPoints
+);
     const levelResult =
 await addCompanyXp(
     currentMembership.team_id,
@@ -237,7 +248,7 @@ if(levelResult && levelResult.leveledUp){
         teamId:currentMembership.team_id,
         actionId:action.id,
         actionTitle:action.title,
-        points:points
+        points:totalPoints
     });
 
     const taskResult =
@@ -262,11 +273,16 @@ if(taskResult && taskResult.completed){
     updateEnergyBar();
 
     alert(
-        action.title +
-        "\n+" +
-        points +
-        " Firmenpunkte"
-    );
+    action.title +
+    "\n+" +
+    totalPoints +
+    " Firmenpunkte" +
+    (
+        bonusPoints > 0
+        ? "\nEventbonus: +" + bonusPoints
+        : ""
+    )
+);
 
     renderActions();
     renderDailyTasks();
@@ -354,4 +370,30 @@ async function renderDailyTasks(){
 
         wrapper.appendChild(div);
     });
+}
+async function renderActiveEvent(){
+
+    const wrapper =
+    document.getElementById("activeEventBox");
+
+    if(!wrapper){
+        return;
+    }
+
+    const event =
+    await getActiveEvent();
+
+    if(!event){
+        wrapper.innerHTML =
+            "<p class='info-text'>Aktuell ist kein Stadt-Event aktiv.</p>";
+        return;
+    }
+
+    wrapper.innerHTML = `
+        <div class="event-card">
+            <h3>${event.title}</h3>
+            <p>${event.description || ""}</p>
+            <p>Bonus: x${event.bonus_multiplier}</p>
+        </div>
+    `;
 }
