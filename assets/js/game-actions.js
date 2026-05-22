@@ -1,3 +1,5 @@
+const GLOBAL_ACTION_COOLDOWN_SECONDS = 1200;
+
 const GAME_ACTIONS = [
 
     {
@@ -6,7 +8,7 @@ const GAME_ACTIONS = [
         pointsMin:5,
         pointsMax:15,
         energyCost:15,
-        cooldown:30
+        cooldown:GLOBAL_ACTION_COOLDOWN_SECONDS
     },
 
     {
@@ -15,7 +17,7 @@ const GAME_ACTIONS = [
         pointsMin:10,
         pointsMax:25,
         energyCost:25,
-        cooldown:60
+        cooldown:GLOBAL_ACTION_COOLDOWN_SECONDS
     },
 
     {
@@ -24,7 +26,7 @@ const GAME_ACTIONS = [
         pointsMin:8,
         pointsMax:18,
         energyCost:20,
-        cooldown:45
+        cooldown:GLOBAL_ACTION_COOLDOWN_SECONDS
     },
 
     {
@@ -33,7 +35,7 @@ const GAME_ACTIONS = [
         pointsMin:6,
         pointsMax:14,
         energyCost:15,
-        cooldown:40
+        cooldown:GLOBAL_ACTION_COOLDOWN_SECONDS
     },
 
     {
@@ -42,7 +44,7 @@ const GAME_ACTIONS = [
         pointsMin:7,
         pointsMax:20,
         energyCost:20,
-        cooldown:50
+        cooldown:GLOBAL_ACTION_COOLDOWN_SECONDS
     }
 
 ];
