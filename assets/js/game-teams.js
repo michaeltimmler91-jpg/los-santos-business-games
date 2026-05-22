@@ -108,3 +108,27 @@ async function getCompanyById(teamId){
 
     return data;
 }
+async function addPointsToCompany(teamId, points){
+
+    const company =
+    await getCompanyById(teamId);
+
+    if(!company){
+        return;
+    }
+
+    const newPoints =
+    company.points + points;
+
+    const { error } =
+    await supabaseClient
+    .from("game_teams")
+    .update({
+        points:newPoints
+    })
+    .eq("id", teamId);
+
+    if(error){
+        console.error(error);
+    }
+}
