@@ -389,11 +389,40 @@ async function renderActiveEvent(){
         return;
     }
 
+    const endsAt =
+        event.ends_at
+        ? new Date(event.ends_at).toLocaleString("de-DE")
+        : "Kein festes Ende";
+
+    const targetText =
+        event.target_types && event.target_types.length > 0
+        ? event.target_types.join(", ")
+        : "Alle Firmenarten";
+
     wrapper.innerHTML = `
         <div class="event-card">
             <h3>${event.title}</h3>
+
             <p>${event.description || ""}</p>
-            <p>Bonus: x${event.bonus_multiplier}</p>
+
+            <p>
+                <strong>Bonus:</strong>
+                x${event.bonus_multiplier}
+            </p>
+
+            <p>
+                <strong>Gilt für:</strong>
+                ${targetText}
+            </p>
+
+            <p>
+                <strong>Endet:</strong>
+                ${endsAt}
+            </p>
+
+            <p class="small-help">
+                Wenn deine Firma zur Zielgruppe passt, bekommst du bei passenden Aktionen automatisch Bonuspunkte.
+            </p>
         </div>
     `;
 }
