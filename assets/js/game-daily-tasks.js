@@ -41,7 +41,7 @@ async function createDailyTasksIfNeeded(company){
         return {
             team_id:company.id,
             action_id:action.id,
-            target_count:1,
+            target_count:3,
             current_count:0,
             reward_points:50,
             completed:false
