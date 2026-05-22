@@ -251,7 +251,7 @@ if(levelResult && levelResult.leveledUp){
     points:totalPoints,
     basePoints:points,
     bonusPoints:bonusPoints
-    });
+});
 
     const taskResult =
 await updateDailyTaskProgress(
