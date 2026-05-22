@@ -81,11 +81,17 @@ async function renderTeamsOverview(){
                 <div>
                     <h2>${team.name}</h2>
                     <p>${team.short_name || "Kein Kürzel"} | ${team.type}</p>
+
+                    <p class="team-level">
+                        Level ${team.level}
+                    </p>
                 </div>
             </div>
 
             <div class="team-meta">
                 <p><strong>Punkte:</strong> ${team.points}</p>
+                <p><strong>Level:</strong> ${team.level}</p>
+                <p><strong>XP:</strong> ${team.xp || 0}</p>
                 <p><strong>Leitung:</strong> ${leaderName}</p>
                 <p><strong>Beschreibung:</strong> ${team.description || "Keine Beschreibung"}</p>
             </div>
