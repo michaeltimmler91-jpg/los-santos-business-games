@@ -45,20 +45,49 @@ function renderDashboardHeader(){
     `;
 }
 
-function renderActions(){
+async function renderActions(){
 
     const wrapper =
     document.getElementById("actionsList");
 
     wrapper.innerHTML = "";
 
-    GAME_ACTIONS.forEach(action => {
+    for(const action of GAME_ACTIONS){
+
+        const cooldownData =
+        await getCooldown(action.id);
+
+        const remaining =
+        getRemainingCooldownSeconds(
+            cooldownData,
+            action.cooldown
+        );
 
         const card =
         document.createElement("div");
 
         card.className =
         "action-card";
+
+        let buttonHtml = "";
+
+        if(remaining > 0){
+
+            buttonHtml = `
+                <button disabled>
+                    Cooldown:
+                    ${formatCooldown(remaining)}
+                </button>
+            `;
+
+        }else{
+
+            buttonHtml = `
+                <button class="execute-action-btn">
+                    Aktion ausführen
+                </button>
+            `;
+        }
 
         card.innerHTML = `
             <h3>${action.title}</h3>
@@ -75,19 +104,27 @@ function renderActions(){
                 ${action.energyCost}
             </p>
 
-            <button>
-                Aktion ausführen
-            </button>
+            <p>
+                Cooldown:
+                ${Math.floor(action.cooldown / 60)}
+                Minuten
+            </p>
+
+            ${buttonHtml}
         `;
 
-        card
-        .querySelector("button")
-        .addEventListener("click", async () => {
-            await executeAction(action);
-        });
+        const executeBtn =
+        card.querySelector(".execute-action-btn");
+
+        if(executeBtn){
+
+            executeBtn.addEventListener("click", async () => {
+                await executeAction(action);
+            });
+        }
 
         wrapper.appendChild(card);
-    });
+    }
 }
 
 async function executeAction(action){
@@ -100,6 +137,25 @@ async function executeAction(action){
 
     if(!currentMembership){
         alert("Du bist in keiner Firma.");
+        return;
+    }
+
+    const cooldownData =
+    await getCooldown(action.id);
+
+    const remaining =
+    getRemainingCooldownSeconds(
+        cooldownData,
+        action.cooldown
+    );
+
+    if(remaining > 0){
+
+        alert(
+            "Cooldown aktiv:\n" +
+            formatCooldown(remaining)
+        );
+
         return;
     }
 
@@ -140,6 +196,8 @@ async function executeAction(action){
         points
     );
 
+    await setCooldown(action.id);
+
     currentProfile.energy =
     newEnergy;
 
@@ -151,6 +209,8 @@ async function executeAction(action){
         points +
         " Firmenpunkte"
     );
+
+    renderActions();
 }
 
 function updateEnergyBar(){
