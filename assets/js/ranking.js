@@ -61,7 +61,7 @@ async function renderRanking(){
     <span>${team.points} Punkte</span>
 `;
 
-        `;
+        
 
         rankingList.appendChild(div);
     });
