@@ -88,6 +88,10 @@ async function renderMemberList(){
         const isLeader =
         currentCompany.leader_id === member.user_id;
 
+        const isAdmin =
+        currentProfile.role === "admin" ||
+        currentProfile.role === "owner";
+
         const leaderBadge =
         isLeader
         ? "<span class='badge'>Leitung</span>"
