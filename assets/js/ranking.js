@@ -50,14 +50,17 @@ async function renderRanking(){
             "#" + (index + 1);
 
         div.innerHTML = `
-            <span class="rank">${medal}</span>
-            <span class="team-dot" style="background:${team.color}"></span>
-            <strong>${team.name}</strong>
-            <span>
-                Level ${team.level}
-                |
-                ${team.points} Punkte
-            </span>
+    <span class="rank">${medal}</span>
+    <span class="team-dot" style="background:${team.color}"></span>
+    <strong>
+        ${team.name}
+        <div class="team-level">
+            Level ${team.level}
+        </div>
+    </strong>
+    <span>${team.points} Punkte</span>
+`;
+
         `;
 
         rankingList.appendChild(div);

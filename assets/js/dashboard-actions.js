@@ -44,10 +44,24 @@ function renderDashboardHeader(){
         return;
     }
 
+    const levelBonusPercent =
+    Math.floor(
+        getCompanyLevelBonus(currentMembership.team) * 100
+    );
+
     playerInfo.innerHTML = `
         ${currentProfile.username}
         <br>
         ${currentMembership.team.name}
+        <br>
+        <small>
+            Level ${currentMembership.team.level}
+            ${
+                levelBonusPercent > 0
+                ? `| +${levelBonusPercent}% Firmenbonus`
+                : ""
+            }
+        </small>
     `;
 }
 
