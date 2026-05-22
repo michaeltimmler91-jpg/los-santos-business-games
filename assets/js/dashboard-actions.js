@@ -247,6 +247,11 @@ if(taskResult && taskResult.completed){
 
     renderActions();
     renderDailyTasks();
+
+    currentMembership =
+    await getMyMembership();
+
+    renderDashboardHeader();
 }
 
 function updateEnergyBar(){
