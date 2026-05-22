@@ -20,7 +20,7 @@ async function initAdminEventsPage(){
         document.querySelector("main").innerHTML = `
             <section class="panel">
                 <h2>Kein Zugriff</h2>
-                <p class="info-text">Du bist kein Admin.</p>
+                <p class="info-text">Nur Owner d&uuml;rfen Stadt-Events verwalten.</p>
             </section>
         `;
         return;
