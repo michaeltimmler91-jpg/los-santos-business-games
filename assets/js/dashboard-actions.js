@@ -272,16 +272,18 @@ if(taskResult && taskResult.completed){
 
     updateEnergyBar();
 
-    alert(
+alert(
     action.title +
-    "\n+" +
-    totalPoints +
-    " Firmenpunkte" +
+    "\nGrundpunkte: " +
+    points +
     (
         bonusPoints > 0
         ? "\nEventbonus: +" + bonusPoints
         : ""
-    )
+    ) +
+    "\nGesamt: " +
+    totalPoints +
+    " Firmenpunkte"
 );
 
     renderActions();
