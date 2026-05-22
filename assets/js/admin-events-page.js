@@ -13,7 +13,7 @@ async function initAdminEventsPage(){
     }
 
     const isAdmin =
-        profile.role === "admin" ||
+        
         profile.role === "owner";
 
     if(!isAdmin){
