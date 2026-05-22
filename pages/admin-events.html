@@ -34,6 +34,11 @@
             <section class="panel">
                 <h2>Neues Stadt-Event</h2>
 
+                <p class="info-text">
+                    Stadt-Events geben teilnehmenden Firmen f&uuml;r eine begrenzte Zeit Bonuspunkte.
+                    Beispiel: Bei einem Gro&szlig;brand k&ouml;nnen Taxi, MD und PD zus&auml;tzliche Punkte erhalten.
+                </p>
+
                 <input
                     type="text"
                     id="eventTitleInput"
@@ -56,6 +61,10 @@
 
                 <label>Zielgruppen</label>
 
+                <p class="small-help">
+                Lege fest, welche Firmenarten vom Event profitieren. Wenn nichts ausgew&auml;hlt ist, gilt das Event f&uuml;r alle.
+                </p>
+                
                 <div class="checkbox-grid">
                     <label>
                         <input type="checkbox" value="firma" class="event-type-checkbox">
@@ -82,6 +91,11 @@
                         Fraktion
                     </label>
                 </div>
+
+                <label>Dauer in Stunden</label>
+                <p class="small-help">
+                    Nach dieser Zeit endet das Event automatisch.
+                </p>
 
                 <input
                     type="number"
