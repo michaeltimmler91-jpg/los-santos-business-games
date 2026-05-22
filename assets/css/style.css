@@ -666,3 +666,8 @@ button:disabled{
     margin-top:-10px;
     margin-bottom:14px;
 }
+.team-level{
+    color:#facc15;
+    font-size:14px;
+    margin-top:4px;
+}
