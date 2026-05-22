@@ -51,7 +51,36 @@ function renderCompanyInfo(company){
 
     document.getElementById("companyPoints").innerText =
         "Punkte: " + company.points;
+const requiredXp =
+    getRequiredXpForLevel(company.level);
 
+const levelBonusPercent =
+    Math.floor(
+        getCompanyLevelBonus(company) * 100
+    );
+
+const levelInfo =
+document.createElement("p");
+
+levelInfo.className =
+"team-level";
+
+levelInfo.innerText =
+    "Level " +
+    company.level +
+    " | XP " +
+    (company.xp || 0) +
+    " / " +
+    requiredXp +
+    (
+        levelBonusPercent > 0
+        ? " | +" + levelBonusPercent + "% Firmenbonus"
+        : ""
+    );
+
+document
+.getElementById("companyPoints")
+.after(levelInfo);
     const requiredXp =
     getRequiredXpForLevel(company.level);
 
