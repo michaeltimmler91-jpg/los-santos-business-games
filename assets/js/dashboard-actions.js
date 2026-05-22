@@ -217,6 +217,14 @@ async function executeAction(action){
         points
     );
 
+    await createActivityLog({
+        userId:currentProfile.id,
+        teamId:currentMembership.team_id,
+        actionId:action.id,
+        actionTitle:action.title,
+        points:points
+    });
+
     const taskResult =
 await updateDailyTaskProgress(
     currentMembership.team_id,
