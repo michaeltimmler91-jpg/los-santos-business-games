@@ -12,6 +12,7 @@ async function initDashboardActions(){
 
     currentProfile =
     await syncEnergy(currentProfile);
+    updateEnergyBar();
 
     if(!currentProfile){
         window.location.href = "../index.html";
@@ -179,10 +180,13 @@ async function executeAction(action){
     }
 
     if(currentProfile.energy < action.energyCost){
-        alert("Nicht genug Energie.");
-        return;
-    }
 
+    updateEnergyBar();
+
+    alert("Nicht genug Energie.");
+
+    return;
+}
     const points =
         Math.floor(
             Math.random() *
