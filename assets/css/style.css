@@ -641,3 +641,22 @@ button:disabled{
     color:#cbd5e1;
     margin-bottom:6px;
 }
+.checkbox-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.checkbox-grid label{
+    background:#111827;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.checkbox-grid input{
+    width:auto;
+    margin-right:8px;
+    margin-bottom:0;
+}

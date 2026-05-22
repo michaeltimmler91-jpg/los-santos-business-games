@@ -46,3 +46,75 @@ function calculateEventBonus(points, company, event){
         points * (event.bonus_multiplier - 1)
     );
 }
+async function createGameEvent(eventData){
+
+    const endsAt =
+    new Date(
+        Date.now() + eventData.durationHours * 60 * 60 * 1000
+    ).toISOString();
+
+    const { error } =
+    await supabaseClient
+    .from("game_events")
+    .insert({
+        title:eventData.title,
+        description:eventData.description,
+        active:true,
+        bonus_multiplier:eventData.bonusMultiplier,
+        target_types:eventData.targetTypes,
+        ends_at:endsAt
+    });
+
+    if(error){
+        return {
+            success:false,
+            message:error.message
+        };
+    }
+
+    return {
+        success:true,
+        message:"Event wurde erstellt."
+    };
+}
+
+async function loadGameEvents(){
+
+    const { data, error } =
+    await supabaseClient
+    .from("game_events")
+    .select("*")
+    .order("created_at", {
+        ascending:false
+    });
+
+    if(error){
+        console.error(error);
+        return [];
+    }
+
+    return data;
+}
+
+async function deactivateGameEvent(eventId){
+
+    const { error } =
+    await supabaseClient
+    .from("game_events")
+    .update({
+        active:false
+    })
+    .eq("id", eventId);
+
+    if(error){
+        return {
+            success:false,
+            message:error.message
+        };
+    }
+
+    return {
+        success:true,
+        message:"Event wurde deaktiviert."
+    };
+}

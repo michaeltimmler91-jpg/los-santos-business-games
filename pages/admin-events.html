@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event-Admin</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <div class="game-container">
+
+        <header class="game-header">
+            <div>
+                <h1>Event-Admin</h1>
+                <p>Stadt-Events erstellen und verwalten</p>
+            </div>
+
+            <nav>
+                <a href="dashboard.html">Spiel</a>
+                <a href="teams.html">Firmen</a>
+                <a href="ranking.html">Rangliste</a>
+                <a href="seasons.html">Seasons</a>
+                <a href="team-admin.html">Firmenleitung</a>
+                <a href="admin.html">User-Admin</a>
+                <a href="admin-teams.html">Firmen-Admin</a>
+                <a href="admin-events.html">Event-Admin</a>
+            </nav>
+        </header>
+
+        <main class="dashboard-grid">
+
+            <section class="panel">
+                <h2>Neues Stadt-Event</h2>
+
+                <input
+                    type="text"
+                    id="eventTitleInput"
+                    placeholder="Titel, z.B. Großbrand in Downtown"
+                >
+
+                <textarea
+                    id="eventDescriptionInput"
+                    placeholder="Beschreibung"
+                ></textarea>
+
+                <input
+                    type="number"
+                    id="eventBonusInput"
+                    placeholder="Bonus-Multiplikator, z.B. 1.5"
+                    value="1.5"
+                    step="0.1"
+                    min="1"
+                >
+
+                <label>Zielgruppen</label>
+
+                <div class="checkbox-grid">
+                    <label>
+                        <input type="checkbox" value="firma" class="event-type-checkbox">
+                        Firma
+                    </label>
+
+                    <label>
+                        <input type="checkbox" value="behoerde" class="event-type-checkbox">
+                        Behörde
+                    </label>
+
+                    <label>
+                        <input type="checkbox" value="werkstatt" class="event-type-checkbox">
+                        Werkstatt
+                    </label>
+
+                    <label>
+                        <input type="checkbox" value="restaurant" class="event-type-checkbox">
+                        Restaurant
+                    </label>
+
+                    <label>
+                        <input type="checkbox" value="fraktion" class="event-type-checkbox">
+                        Fraktion
+                    </label>
+                </div>
+
+                <input
+                    type="number"
+                    id="eventDurationInput"
+                    placeholder="Dauer in Stunden"
+                    value="2"
+                    min="1"
+                >
+
+                <button id="createEventBtn">
+                    Event erstellen
+                </button>
+
+                <p id="eventAdminMessage" class="message"></p>
+            </section>
+
+            <section class="panel">
+                <h2>Aktuelle Events</h2>
+                <div id="eventsAdminList"></div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../assets/js/supabase.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/game-events.js"></script>
+    <script src="../assets/js/admin-events-page.js"></script>
+
+</body>
+</html>
