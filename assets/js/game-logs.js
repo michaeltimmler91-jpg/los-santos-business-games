@@ -1,5 +1,7 @@
 async function createActivityLog(logData){
 
+    console.log("LOG DATA:", logData);
+
     const { error } =
     await supabaseClient
     .from("game_activity_logs")
