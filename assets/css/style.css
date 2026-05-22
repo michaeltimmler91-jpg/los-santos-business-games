@@ -571,3 +571,19 @@ button:disabled{
     margin-bottom:10px;
     color:#cbd5e1;
 }
+.daily-task-card{
+    background:#111827;
+    padding:14px;
+    border-radius:14px;
+    margin-bottom:12px;
+}
+
+.daily-task-card strong{
+    display:block;
+    margin-bottom:8px;
+}
+
+.daily-task-card p{
+    color:#cbd5e1;
+    margin-bottom:6px;
+}

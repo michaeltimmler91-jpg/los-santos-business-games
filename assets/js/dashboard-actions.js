@@ -23,6 +23,7 @@ async function initDashboardActions(){
 
     renderDashboardHeader();
     renderActions();
+    renderDailyTasks();
 }
 
 function renderDashboardHeader(){
@@ -216,6 +217,20 @@ async function executeAction(action){
         points
     );
 
+    const taskResult =
+await updateDailyTaskProgress(
+    currentMembership.team_id,
+    action.id
+);
+
+if(taskResult && taskResult.completed){
+    alert(
+        "Tagesaufgabe abgeschlossen!\n+" +
+        taskResult.rewardPoints +
+        " Bonus-Firmenpunkte"
+    );
+}
+
     await setCooldown(action.id);
 
     currentProfile.energy =
@@ -231,6 +246,7 @@ async function executeAction(action){
     );
 
     renderActions();
+    renderDailyTasks();
 }
 
 function updateEnergyBar(){
@@ -246,4 +262,68 @@ function updateEnergyBar(){
 
     energyFill.style.width =
         currentProfile.energy + "%";
+}
+async function renderDailyTasks(){
+
+    const wrapper =
+    document.getElementById("dailyTasksList");
+
+    if(!wrapper){
+        return;
+    }
+
+    if(!currentMembership){
+        wrapper.innerHTML =
+            "<p class='info-text'>Du bist in keiner Firma.</p>";
+        return;
+    }
+
+    const tasks =
+    await createDailyTasksIfNeeded(currentMembership.team);
+
+    wrapper.innerHTML = "";
+
+    if(tasks.length === 0){
+        wrapper.innerHTML =
+            "<p class='info-text'>Keine Tagesaufgaben vorhanden.</p>";
+        return;
+    }
+
+    tasks.forEach(task => {
+
+        const action =
+        GAME_ACTIONS.find(a => {
+            return a.id === task.action_id;
+        });
+
+        const title =
+        action ? action.title : task.action_id;
+
+        const div =
+        document.createElement("div");
+
+        div.className =
+        "daily-task-card";
+
+        div.innerHTML = `
+            <strong>${title}</strong>
+            <p>
+                ${task.current_count}
+                /
+                ${task.target_count}
+                erledigt
+            </p>
+            <p>
+                Belohnung:
+                ${task.reward_points}
+                Firmenpunkte
+            </p>
+            <p>
+                Status:
+                ${task.completed ? "Abgeschlossen" : "Offen"}
+            </p>
+        `;
+
+        wrapper.appendChild(div);
+    });
 }
