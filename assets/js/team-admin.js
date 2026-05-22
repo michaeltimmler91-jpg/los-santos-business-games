@@ -223,9 +223,18 @@ async function renderCompanyLogs(){
             <strong>${username}</strong>
             <p>${log.action_title}</p>
             <p>
-    Grundpunkte: ${log.base_points || log.points}
-    ${log.bonus_points > 0 ? "| Eventbonus: +" + log.bonus_points : ""}
+    Grundpunkte: ${log.base_points}
 </p>
+
+${
+    log.bonus_points > 0
+    ? `
+        <p>
+            Eventbonus: +${log.bonus_points}
+        </p>
+    `
+    : ""
+}
 
 <p>
     Gesamt: +${log.points} Punkte
