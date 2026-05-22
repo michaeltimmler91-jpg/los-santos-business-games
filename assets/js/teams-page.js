@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initTeamsPage();
 });
 
+let myMembership = null;
+
 async function initTeamsPage(){
 
     const profile =
@@ -11,6 +13,9 @@ async function initTeamsPage(){
         window.location.href = "../index.html";
         return;
     }
+
+    myMembership =
+    await getMyMembership();
 
     renderTeamsOverview();
 }
@@ -47,6 +52,28 @@ async function renderTeamsOverview(){
             ? team.leader.username
             : "Keine Leitung";
 
+        let buttonHtml = "";
+
+        if(!myMembership){
+            buttonHtml = `
+                <button class="join-company-btn">
+                    Firma beitreten
+                </button>
+            `;
+        }else if(myMembership.team_id === team.id){
+            buttonHtml = `
+                <button class="small-danger-btn leave-company-btn">
+                    Firma verlassen
+                </button>
+            `;
+        }else{
+            buttonHtml = `
+                <button disabled>
+                    Bereits in anderer Firma
+                </button>
+            `;
+        }
+
         card.innerHTML = `
             <div class="team-overview-head">
                 <span class="team-dot large" style="background:${team.color}"></span>
@@ -62,7 +89,52 @@ async function renderTeamsOverview(){
                 <p><strong>Leitung:</strong> ${leaderName}</p>
                 <p><strong>Beschreibung:</strong> ${team.description || "Keine Beschreibung"}</p>
             </div>
+
+            <div class="company-actions">
+                ${buttonHtml}
+            </div>
         `;
+
+        const joinBtn =
+        card.querySelector(".join-company-btn");
+
+        if(joinBtn){
+            joinBtn.addEventListener("click", async () => {
+                const result =
+                await joinCompany(team.id);
+
+                alert(result.message);
+
+                myMembership =
+                await getMyMembership();
+
+                renderTeamsOverview();
+            });
+        }
+
+        const leaveBtn =
+        card.querySelector(".leave-company-btn");
+
+        if(leaveBtn){
+            leaveBtn.addEventListener("click", async () => {
+                const confirmed =
+                confirm("Firma wirklich verlassen?");
+
+                if(!confirmed){
+                    return;
+                }
+
+                const result =
+                await leaveCompany();
+
+                alert(result.message);
+
+                myMembership =
+                await getMyMembership();
+
+                renderTeamsOverview();
+            });
+        }
 
         wrapper.appendChild(card);
     });
