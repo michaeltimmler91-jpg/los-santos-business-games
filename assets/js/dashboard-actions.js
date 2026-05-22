@@ -10,6 +10,9 @@ async function initDashboardActions(){
     currentProfile =
     await getCurrentProfile();
 
+    currentProfile =
+    await syncEnergy(currentProfile);
+
     if(!currentProfile){
         window.location.href = "../index.html";
         return;
@@ -132,6 +135,9 @@ async function executeAction(action){
     currentProfile =
     await getCurrentProfile();
 
+    currentProfile =
+    await syncEnergy(currentProfile);
+
     currentMembership =
     await getMyMembership();
 
@@ -181,9 +187,12 @@ async function executeAction(action){
     const { error } =
     await supabaseClient
     .from("game_profiles")
+
     .update({
-        energy:newEnergy
+        energy:newEnergy,
+        last_energy_update:new Date().toISOString()
     })
+    
     .eq("id", currentProfile.id);
 
     if(error){
