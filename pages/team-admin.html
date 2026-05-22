@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Wars - Teamleitung</title>
+    <title>Firmenleitung</title>
 
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
@@ -13,39 +13,33 @@
 
         <header class="game-header">
             <div>
-                <h1>Teamleitung</h1>
-                <p id="teamAdminInfo">Lade Teamdaten...</p>
+                <h1>Firmenleitung</h1>
+                <p id="teamAdminInfo">Lade Firma...</p>
             </div>
 
             <nav>
                 <a href="dashboard.html">Spiel</a>
+                <a href="teams.html">Firmen</a>
                 <a href="ranking.html">Rangliste</a>
-                <a href="teams.html">Teams</a>
-                <a href="team-admin.html">Teamleitung</a>
-                <a href="admin.html">Admin</a>
+                <a href="team-admin.html">Firmenleitung</a>
+                <a href="admin.html">User-Admin</a>
+                <a href="admin-teams.html">Firmen-Admin</a>
             </nav>
         </header>
 
         <main class="dashboard-grid">
 
             <section class="panel">
-                <h2>Mitglied hinzufügen</h2>
+                <h2>Firmeninfos</h2>
 
-                <input
-                    type="text"
-                    id="newMemberName"
-                    placeholder="Spielername"
-                >
-
-                <button id="addMemberBtn">
-                    Mitglied hinzufügen
-                </button>
+                <p id="companyInfoText" class="info-text"></p>
 
                 <p id="teamAdminMessage" class="message"></p>
             </section>
 
             <section class="panel">
-                <h2>Mitglieder</h2>
+                <h2>Mitarbeiter</h2>
+
                 <div id="memberList" class="member-list"></div>
             </section>
 
@@ -53,9 +47,12 @@
 
     </div>
 
-    <script src="../assets/js/config.js"></script>
-    <script src="../assets/js/storage.js"></script>
-    <script src="../assets/js/teams.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../assets/js/supabase.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/game-teams.js"></script>
+    <script src="../assets/js/game-members.js"></script>
     <script src="../assets/js/team-admin.js"></script>
 
 </body>
