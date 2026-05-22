@@ -52,3 +52,31 @@ async function addCompanyXp(teamId, amount){
         leveledUp:leveledUp
     };
 }
+function getCompanyLevelBonus(company){
+
+    if(!company){
+        return 0;
+    }
+
+    if(company.level >= 10){
+        return 0.20;
+    }
+
+    if(company.level >= 5){
+        return 0.10;
+    }
+
+    if(company.level >= 3){
+        return 0.05;
+    }
+
+    return 0;
+}
+
+function calculateLevelBonus(points, company){
+
+    const bonus =
+    getCompanyLevelBonus(company);
+
+    return Math.floor(points * bonus);
+}

@@ -222,8 +222,14 @@ calculateEventBonus(
     activeEvent
 );
 
+const levelBonusPoints =
+calculateLevelBonus(
+    points,
+    currentMembership.team
+);
+
 const totalPoints =
-points + bonusPoints;
+points + bonusPoints + levelBonusPoints;
     await addPointsToCompany(
     currentMembership.team_id,
     totalPoints
@@ -281,6 +287,11 @@ alert(
     (
         bonusPoints > 0
         ? "\nEventbonus: +" + bonusPoints
+        : ""
+    ) +
+    (
+        levelBonusPoints > 0
+        ? "\nLevelbonus: +" + levelBonusPoints
         : ""
     ) +
     "\nGesamt: " +
