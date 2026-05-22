@@ -522,3 +522,13 @@ input[type="color"]{
 .unblock-btn:hover{
     background:#1d4ed8;
 }
+textarea{
+    width:100%;
+    min-height:90px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-size:16px;
+    resize:vertical;
+}

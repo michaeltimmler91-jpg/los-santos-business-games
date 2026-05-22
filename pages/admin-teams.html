@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Admin - Firmen</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <div class="game-container">
+
+        <header class="game-header">
+
+            <div>
+                <h1>Firmenverwaltung</h1>
+                <p>Firmen, Fraktionen und Organisationen verwalten</p>
+            </div>
+
+            <nav>
+                <a href="dashboard.html">Spiel</a>
+                <a href="teams.html">Firmen</a>
+                <a href="ranking.html">Rangliste</a>
+                <a href="team-admin.html">Firmenleitung</a>
+                <a href="admin.html">User-Admin</a>
+                <a href="admin-teams.html">Firmen-Admin</a>
+            </nav>
+
+        </header>
+
+        <main class="dashboard-grid">
+
+            <section class="panel">
+
+                <h2>Neue Firma erstellen</h2>
+
+                <input
+                    type="text"
+                    id="companyNameInput"
+                    placeholder="Name, z.B. Los Santos Taxi"
+                >
+
+                <input
+                    type="text"
+                    id="companyShortInput"
+                    placeholder="Kürzel, z.B. Taxi"
+                >
+
+                <select id="companyTypeInput">
+                    <option value="firma">Firma</option>
+                    <option value="fraktion">Fraktion</option>
+                    <option value="behoerde">Behörde</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="werkstatt">Werkstatt</option>
+                    <option value="sonstiges">Sonstiges</option>
+                </select>
+
+                <textarea
+                    id="companyDescriptionInput"
+                    placeholder="Kurze Beschreibung"
+                ></textarea>
+
+                <input
+                    type="color"
+                    id="companyColorInput"
+                    value="#facc15"
+                >
+
+                <button id="createCompanyBtn">
+                    Firma erstellen
+                </button>
+
+                <p id="companyAdminMessage" class="message"></p>
+
+            </section>
+
+            <section class="panel">
+
+                <h2>Vorhandene Firmen</h2>
+
+                <div id="companyAdminList"></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../assets/js/supabase.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/game-teams.js"></script>
+    <script src="../assets/js/admin-teams-page.js"></script>
+
+</body>
+</html>
