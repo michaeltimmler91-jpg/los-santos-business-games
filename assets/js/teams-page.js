@@ -1,44 +1,69 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game - Firmen</title>
+document.addEventListener("DOMContentLoaded", () => {
+    initTeamsPage();
+});
 
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
+async function initTeamsPage(){
 
-    <div class="game-container">
+    const profile =
+    await getCurrentProfile();
 
-        <header class="game-header">
+    if(!profile){
+        window.location.href = "../index.html";
+        return;
+    }
 
-            <div>
-                <h1>Firmen & Fraktionen</h1>
-                <p>Alle teilnehmenden Organisationen</p>
+    renderTeamsOverview();
+}
+
+async function renderTeamsOverview(){
+
+    const wrapper =
+    document.getElementById("teamsOverview");
+
+    const teams =
+    await loadGameTeams();
+
+    wrapper.innerHTML = "";
+
+    if(teams.length === 0){
+        wrapper.innerHTML =
+            "<section class='panel'><p class='info-text'>Noch keine Firmen vorhanden.</p></section>";
+        return;
+    }
+
+    teams.forEach(team => {
+
+        const card =
+        document.createElement("section");
+
+        card.className =
+        "team-overview-card";
+
+        card.style.borderColor =
+        team.color;
+
+        const leaderName =
+            team.leader && team.leader.username
+            ? team.leader.username
+            : "Keine Leitung";
+
+        card.innerHTML = `
+            <div class="team-overview-head">
+                <span class="team-dot large" style="background:${team.color}"></span>
+
+                <div>
+                    <h2>${team.name}</h2>
+                    <p>${team.short_name || "Kein Kürzel"} | ${team.type}</p>
+                </div>
             </div>
 
-            <nav>
-                <a href="dashboard.html">Spiel</a>
-                <a href="teams.html">Firmen</a>
-                <a href="ranking.html">Rangliste</a>
-                <a href="team-admin.html">Firmenleitung</a>
-                <a href="admin.html">User-Admin</a>
-                <a href="admin-teams.html">Firmen-Admin</a>
-            </nav>
+            <div class="team-meta">
+                <p><strong>Punkte:</strong> ${team.points}</p>
+                <p><strong>Leitung:</strong> ${leaderName}</p>
+                <p><strong>Beschreibung:</strong> ${team.description || "Keine Beschreibung"}</p>
+            </div>
+        `;
 
-        </header>
-
-        <main class="teams-overview" id="teamsOverview"></main>
-
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script src="../assets/js/supabase.js"></script>
-    <script src="../assets/js/auth.js"></script>
-    <script src="../assets/js/game-teams.js"></script>
-    <script src="../assets/js/teams-page.js"></script>
-
-</body>
-</html>
+        wrapper.appendChild(card);
+    });
+}
